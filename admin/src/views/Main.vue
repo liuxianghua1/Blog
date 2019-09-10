@@ -68,11 +68,11 @@
             </MenuItem>
           </MenuGroup>
           <MenuGroup title="统计分析">
-            <MenuItem name="3">
+            <MenuItem name="5">
               <Icon type="md-heart" />
               用户留存
             </MenuItem>
-            <MenuItem name="4">
+            <MenuItem name="6">
               <Icon type="md-leaf" />
               流失用户
             </MenuItem>

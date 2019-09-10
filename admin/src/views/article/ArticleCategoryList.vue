@@ -1,5 +1,6 @@
 <template>
-  <Table :columns="columns1" :data="category"> </Table>
+  <Table :columns="columns1" :data="category">
+  </Table>
 </template>
 <script>
 export default {
@@ -53,7 +54,7 @@ export default {
                       this.$Notice.success({
                         title: "删除成功"
                       });
-                      this.$http.delete(`/category/delete/${params.row._id}`);
+                      this.$http.delete(`rest/category/delete/${params.row._id}`);
                       this.remove(params.index);
                     }
                   }
@@ -68,7 +69,7 @@ export default {
   },
   methods: {
     async fetch() {
-      const res = await this.$http.get("category");
+      const res = await this.$http.get("rest/category");
       this.category = res.data;
     },
     remove(index) {

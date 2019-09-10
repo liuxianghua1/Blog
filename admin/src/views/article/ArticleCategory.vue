@@ -10,7 +10,7 @@
       />
     </FormItem>
     <FormItem>
-      <Button type="primary" @click="handleSubmit('formInline')">Signin</Button>
+      <Button type="primary" @click="handleSubmit('formInline')">确定</Button>
     </FormItem>
   </Form>
 </template>
@@ -49,14 +49,14 @@ export default {
 
     async save() {
       if (this.id) {
-        await this.$http.put(`category/${this.id}`, this.formInline);
+        await this.$http.put(`rest/category/${this.id}`, this.formInline);
       } else {
-        await this.$http.post("category", this.formInline);
+        await this.$http.post("rest/category", this.formInline);
       }
       this.$router.push("/category/list");
     },
     async fetch() {
-      const res = await this.$http.get(`category/${this.id}`, this.formInline);
+      const res = await this.$http.get(`rest/category/${this.id}`, this.formInline);
       this.formInline = res.data;
     }
   },
