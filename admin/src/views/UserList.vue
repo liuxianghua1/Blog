@@ -37,11 +37,12 @@ export default {
       // 分页自增
       return (this.paginations.page_index - 1) * this.paginations.page_size + index + 1
     },
-    async fetch() {
+    async fetch(page = 1, size = 10) {
       // 全屏loading开启
       const loadingInstance = this.$loading()
-      const res = await this.$http.get(`/api/users/?page=${this.paginations.page_num}&size=${this.paginations.page_size}`)
 
+      // 数据获取
+      const res = await this.$http.get(`/api/users/?page=${page}&size=${size}`)
       this.paginations.total = res.data.count
 
       if (res.status === 200) {
@@ -56,16 +57,13 @@ export default {
     },
     async handleCurrentChange(page) {
       // 页码变化触发操作
-      const res = await this.$http.get(`/api/users/?page=${page}&size=${this.paginations.page_size}`)
-      this.paginations.total = res.data.count
-      this.tableData = res.data.results
+      this.fetch(page, this.paginations.page_size)
+      this.paginations.page_num = page
     },
-    async handleSizeChange(val) {
+    async handleSizeChange(size) {
       // 每页x条变化触发操作
-      this.paginations.page_size = val
-      const res = await this.$http.get(`/api/users/?page=${this.paginations.page_num}&size=${this.paginations.page_size}`)
-      this.paginations.total = res.data.count
-      this.tableData = res.data.results
+      this.paginations.page_size = size
+      this.fetch(this.paginations.page_num, size)
     }
   },
   created() {
