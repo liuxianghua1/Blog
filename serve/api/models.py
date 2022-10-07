@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models here.
 
-class UserList(models.Model):
+class Users(models.Model):
   # 用户命、密码、手机号、创建时间、最近登录时间、权限、token、状态
   role_choices = (
     (0,"管理员"),

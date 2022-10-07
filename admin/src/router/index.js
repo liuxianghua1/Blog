@@ -5,6 +5,7 @@ import UserList from '../views/UserList.vue'
 Vue.use(VueRouter)
 
 const routes = [
+  { path: '/', redirect: '/home' },
   {
     path: '/home',
     name: 'Main',
