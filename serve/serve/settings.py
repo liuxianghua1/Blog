@@ -35,6 +35,9 @@ CORS_ORIGIN_ALLOW_ALL = True  # 解决跨域
 CORS_ALLOW_HEADERS = ("*")  # 解决跨域
 
 
+TIME_ZONE = 'Asia/Shanghai' # 时区调整中国
+
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',

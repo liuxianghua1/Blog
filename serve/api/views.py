@@ -10,7 +10,7 @@ class MyPageNumberPagination(PageNumberPagination):
   max_page_size = 50
 
 class UsersModelViewSet(ModelViewSet):
-  queryset = Users.objects.all()
+  queryset = Users.objects.all().order_by("id")
   serializer_class = UsersSerializer
   pagination_class = MyPageNumberPagination
 

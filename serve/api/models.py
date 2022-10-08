@@ -18,7 +18,7 @@ class Users(models.Model):
   password = models.CharField(max_length=32)
   phone = models.CharField(max_length=32)
   createtime = models.DateField()
-  lastlogintime = models.DateField()
+  lastlogintime = models.DateTimeField(auto_now_add=True)
   role = models.SmallIntegerField(choices=role_choices,default=0)
   token = models.CharField(max_length=64, null=True, blank=True)
   status = models.SmallIntegerField(choices=status_choices, default=1)
