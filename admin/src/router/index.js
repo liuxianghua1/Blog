@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Main from '../views/Main.vue'
 import UserList from '../views/UserList.vue'
+import UserCreate from '../views/UserCreate.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -14,6 +15,15 @@ const routes = [
       {
         path: 'user_list',
         component: UserList
+      },
+      {
+        path: 'user_create',
+        component: UserCreate
+      },
+      {
+        path: 'user_updata/:id',
+        component: UserCreate,
+        props: true
       }
     ]
   }

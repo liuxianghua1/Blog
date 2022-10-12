@@ -11,6 +11,7 @@
           <el-submenu index="1">
             <template slot="title"><i class="el-icon-user"></i>用户管理</template>
             <el-menu-item-group>
+              <el-menu-item index="/home/user_create">新建用户</el-menu-item>
               <el-menu-item index="/home/user_list">用户列表</el-menu-item>
             </el-menu-item-group>
           </el-submenu>

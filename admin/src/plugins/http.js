@@ -21,7 +21,7 @@ http.interceptors.response.use(
       Vue.prototype.$message({
         type: 'error',
         // 弹窗的内容 在status中的message定义
-        message: err.message
+        message: err
       })
       loadingInstance.close()
       // if (err.response.status === 401) {

@@ -1,4 +1,3 @@
-from random import choices
 from django.db import models
 
 # Create your models here.
@@ -15,10 +14,10 @@ class Users(models.Model):
   )
 
   username = models.CharField(max_length=32, unique = True)
-  password = models.CharField(max_length=32)
+  password = models.CharField(max_length=256)
   phone = models.CharField(max_length=32)
-  createtime = models.DateField()
-  lastlogintime = models.DateTimeField(auto_now_add=True)
+  createtime = models.DateField(auto_now_add=True)
+  lastlogintime = models.DateTimeField(null=True,blank=True)
   role = models.SmallIntegerField(choices=role_choices,default=0)
   token = models.CharField(max_length=64, null=True, blank=True)
   status = models.SmallIntegerField(choices=status_choices, default=1)
