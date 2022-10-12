@@ -44,6 +44,10 @@ class UsersModelViewSet(ModelViewSet):
   # 更新用户也是 密码需要进行加密 用户名和手机号不允许传参过来 只修改密码和权限、状态
   @action(methods=["put"],detail=True)
   def updateuser(self, request,pk):
+      if len(request.data) == 1:
+        status = request.data.get('status')
+        Users.objects.filter(id=pk).update(status=status)
+        return Response({'msg':'修改成功','code':201})
       password = make_password(request.data.get('password'))
       # print(check_password('123',make_password('123')))
       # 密码解码用
@@ -52,9 +56,8 @@ class UsersModelViewSet(ModelViewSet):
       Users.objects.filter(id=pk).update(status=status, password=password, role=role)
       return Response({'msg':'修改成功','code':201})
       
-  @action(methods=["patch"],detail=True)
-  def updatestatus(self, request,pk):
-      status = request.data.get('status')
-      Users.objects.filter(id=pk).update(status=status)
-      return Response({'msg':'修改成功','code':201})
+  # @action(methods=["patch"],detail=True)
+  # def updatestatus(self, request,pk):
+  #     print(len(request.data))
+      
     

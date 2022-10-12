@@ -77,7 +77,7 @@ export default {
   methods: {
     // 状态更改方法 这个id是从scope.row.id中传过来的
     statusChange(id, status) {
-      this.$http.patch(`/api/users/${id}/updatestatus/`, { status: status === 1 ? 0 : 1 }).then(() => {
+      this.$http.put(`/api/users/${id}/updateuser/`, { status: status === 1 ? 0 : 1 }).then(() => {
         this.fetch(this.paginations.page_num, this.paginations.page_size)
       })
     },
