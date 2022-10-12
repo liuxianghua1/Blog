@@ -37,9 +37,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="status" label="状态">
+      <el-table-column
+        prop="status"
+        :filters="[
+          { text: '禁用', value: 0 },
+          { text: '激活', value: 1 }
+        ]"
+        :filter-method="filterStatus"
+        label="状态"
+      >
         <template slot-scope="scope">
-          <!-- <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">{{ scope.row.status === 1 ? '激活' : '禁用' }}</el-tag> -->
           <el-switch :value="scope.row.status === 1 ? true : false" active-color="#13ce66" inactive-color="#ff4949" active-text="激活" inactive-text="禁用" @change="statusChange(scope.row.id, scope.row.status)"> </el-switch>
         </template>
       </el-table-column>
@@ -84,6 +91,10 @@ export default {
     filterRole(value, row) {
       // 权限筛选功能
       return row.role === value
+    },
+    filterStatus(value, row) {
+      // 权限筛选功能
+      return row.status === value
     },
     handleDelete(row) {
       // 删除方法
