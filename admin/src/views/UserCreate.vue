@@ -5,10 +5,10 @@
 
     <!-- 表单区域 -->
     <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-      <el-form-item label="用户名" prop="username">
+      <el-form-item label="用户名" :prop="id ? '' : 'username'">
         <el-input :disabled="id ? true : false" placeholder="保存后无法修改,请谨慎填写。" v-model="ruleForm.username"></el-input>
       </el-form-item>
-      <el-form-item label="手机号" prop="phone">
+      <el-form-item label="手机号" :prop="id ? '' : 'phone'">
         <el-input :disabled="id ? true : false" placeholder="保存后无法修改,请谨慎填写。" v-model="ruleForm.phone"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">

@@ -1,4 +1,4 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import mixins,viewsets
 from .models import Users
 from .serializers import UsersSerializer
 
@@ -13,7 +13,7 @@ class MyPageNumberPagination(PageNumberPagination):
   page_size = 10
   max_page_size = 50
 
-class UsersModelViewSet(ModelViewSet):
+class UsersModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.DestroyModelMixin,viewsets.GenericViewSet):
   queryset = Users.objects.all().order_by("-id")
   serializer_class = UsersSerializer
   pagination_class = MyPageNumberPagination
@@ -41,23 +41,21 @@ class UsersModelViewSet(ModelViewSet):
         return Response({'msg':'添加成功','code':201})
    
 
+  # 自定义更新方法
   # 更新用户也是 密码需要进行加密 用户名和手机号不允许传参过来 只修改密码和权限、状态
   @action(methods=["put"],detail=True)
   def updateuser(self, request,pk):
-      if len(request.data) == 1:
-        status = request.data.get('status')
+      status = request.data.get('status')
+      password = make_password(request.data.get('password'))
+      role = request.data.get('role')
+      if len(request.data) == 1 and status in [0,1]:
         Users.objects.filter(id=pk).update(status=status)
         return Response({'msg':'修改成功','code':201})
-      password = make_password(request.data.get('password'))
+
       # print(check_password('123',make_password('123')))
       # 密码解码用
-      role = request.data.get('role')
-      status = request.data.get('status')
+
       Users.objects.filter(id=pk).update(status=status, password=password, role=role)
       return Response({'msg':'修改成功','code':201})
-      
-  # @action(methods=["patch"],detail=True)
-  # def updatestatus(self, request,pk):
-  #     print(len(request.data))
       
     
