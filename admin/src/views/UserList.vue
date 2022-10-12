@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-table border :default-sort="{ prop: 'createtime', prop: 'lastlogintime' }" :data="tableData" stripe style="width: 100%">
+    <el-table border :row-class-name="tableRowClassName" :default-sort="{ prop: 'createtime', prop: 'lastlogintime' }" :data="tableData.filter(data => !search || data.username.toLowerCase().includes(search.toLowerCase()))" style="width: 100%">
       <el-table-column type="index" :index="table_index" width="50" label="序号"> </el-table-column>
       <el-table-column prop="id" label="id"> </el-table-column>
       <el-table-column prop="username" label="用户名">
@@ -50,7 +50,10 @@
           <el-switch :value="scope.row.status === 1 ? true : false" active-color="#13ce66" inactive-color="#ff4949" active-text="激活" inactive-text="禁用" @change="statusChange(scope.row.id, scope.row.status)"> </el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column align="right">
+        <template slot="header" slot-scope="{}">
+          <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+        </template>
         <template slot-scope="scope">
           <el-button size="medium" type="primary" round @click="$router.push(`/home/user_updata/${scope.row.id}`)">编辑</el-button>
           <el-button size="medium" type="danger" round @click="handleDelete(scope.row)">删除</el-button>
@@ -70,8 +73,8 @@
 export default {
   data() {
     return {
+      search: '',
       tableData: [],
-      value2: true,
       paginations: {
         page_index: 1, // 序号
         total: 0,
@@ -82,6 +85,11 @@ export default {
     }
   },
   methods: {
+    tableRowClassName({ row }) {
+      if (row.status === 0) {
+        return 'danger-row'
+      }
+    },
     // 状态更改方法 这个id是从scope.row.id中传过来的
     statusChange(id, status) {
       this.$http.put(`/api/users/${id}/updateuser/`, { status: status === 1 ? 0 : 1 }).then(() => {
@@ -162,4 +170,8 @@ export default {
   }
 }
 </script>
-<style></style>
+<style>
+.el-table .danger-row {
+  background: #f8e2e1;
+}
+</style>
