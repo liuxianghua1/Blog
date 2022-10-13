@@ -18,7 +18,7 @@
           <span style="margin-left: 10px">{{ scope.row.createtime }}</span>
         </template>
       </el-table-column>
-      <el-table-column sortable prop="lastlogintime" label="最后登录时间">
+      <el-table-column sortable prop="lastlogintime" label="最后使用时间">
         <template slot-scope="scope">
           {{ scope.row.lastlogintime ? scope.row.lastlogintime : '还没登陆过' }}
         </template>

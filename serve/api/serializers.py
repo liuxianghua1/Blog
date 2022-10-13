@@ -1,7 +1,7 @@
 from rest_framework import serializers #序列化器
 from .models import Users   #用户模型
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer #jwt
-from rest_framework import exceptions #异常报错
+from django.utils import timezone as datetime
 from django.contrib.auth.hashers import check_password #密码解码
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -23,7 +23,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         try:
             user = Users.objects.get(username= attrs['username'])
-
             check = check_password(attrs['password'],user.password)
             # 对密码进行解密 如果密码正确则发送token 否则报错
 
@@ -32,11 +31,13 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                 refresh["name"] = user.username
                 refresh["role"] = user.role
                 refresh["status"] = user.status
-                if user.status == 0:
+                if user.status == 1:
+                    #给登录的用户附上登录时间
+                    Users.objects.filter(id=user.id).update(lastlogintime=datetime.now())
+                    data = {"msg":"登陆成功","role":user.role,"code":200,"username":user.username,"id": user.id, "token": str(refresh.access_token), "refresh": str(refresh)}
+                    return data
+                else:
                     return {"msg":'你的账号被禁止登录',"code":500}
-                data = {"msg":"登陆成功","role":user.role,"code":200,"username":user.username,"id": user.id, "token": str(refresh.access_token), "refresh": str(refresh)}
-                return data
             return {"msg":'账号或密码错误',"code":500}
         except Exception as e:
-            # raise exceptions.NotFound(e.args)
             return {"msg":e.args[0],"code":500}

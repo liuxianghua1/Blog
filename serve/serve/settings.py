@@ -150,7 +150,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(hours=12),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=30),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
     'USER_ID_FIELD': "id",
     # 此处id为生成token时使用自定义的用户表时会使用到，USER_ID_FIELD 是自定义用户表的id，不是id时 会报错user_id = getattr(user, api_settings.USER_ID_FIELD)

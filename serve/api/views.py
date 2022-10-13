@@ -1,4 +1,3 @@
-from urllib import request
 from rest_framework import mixins,viewsets
 from .models import Users
 from .serializers import UsersSerializer,MyTokenObtainPairSerializer
@@ -64,14 +63,12 @@ class UsersModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.D
       status = request.data.get('status')
       password = make_password(request.data.get('password'))
       role = request.data.get('role')
+      user = Users.objects.filter(id=pk)
+      # 这是用户列表中滑块修改状态的方法判断
       if len(request.data) == 1 and status in [0,1]:
-        Users.objects.filter(id=pk).update(status=status)
-        return Response({'msg':'修改成功','code':201})
-
-      # print(check_password('123',make_password('123')))
-      # 密码解码用
-
-      Users.objects.filter(id=pk).update(status=status, password=password, role=role)
+        user.update(status=status)
+        return Response({'msg':'状态修改成功','code':201})
+      user.update(status=status, password=password, role=role)
       return Response({'msg':'修改成功','code':201})
       
     

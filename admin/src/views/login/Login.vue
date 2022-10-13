@@ -56,7 +56,6 @@ export default {
       localStorage.id = res.data.id
       localStorage.username = res.data.username
       localStorage.role = res.data.role
-      // localStorage.user = { id: res.data.id, username: res.data.username }
       if (res.data.code === 200) {
         this.$message({
           type: 'success',

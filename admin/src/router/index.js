@@ -47,8 +47,7 @@ router.beforeEach((to, from, next) => {
 
   if (!to.meta.isPublic && !localStorage.token) {
     return next('/login')
-  }
-  if (to.meta.role === 1 && Number(localStorage.role) === 0) {
+  } else if (to.meta.role === 1 && Number(localStorage.role) === 0) {
     return next('/home')
   }
   next()
