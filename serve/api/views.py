@@ -1,19 +1,36 @@
+from urllib import request
 from rest_framework import mixins,viewsets
 from .models import Users
-from .serializers import UsersSerializer
+from .serializers import UsersSerializer,MyTokenObtainPairSerializer
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from rest_framework.pagination import PageNumberPagination
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import make_password
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+from rest_framework.permissions import BasePermission
+
+class FormulaTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 class MyPageNumberPagination(PageNumberPagination):
   page_size_query_param = "size"
   page_size = 10
   max_page_size = 50
 
+class SuperAdminPermission(BasePermission):
+  message = {"code": 500, 'data': "无权访问"}
+  def has_permission(self, request, view):
+      print(request.user[0].role)
+      if request.user[0].role == 1:
+            return True
+      return False
+
+
 class UsersModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.DestroyModelMixin,viewsets.GenericViewSet):
+  permission_classes = [SuperAdminPermission]
   queryset = Users.objects.all().order_by("-id")
   serializer_class = UsersSerializer
   pagination_class = MyPageNumberPagination
