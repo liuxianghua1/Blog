@@ -21,9 +21,8 @@ class MyPageNumberPagination(PageNumberPagination):
   max_page_size = 50
 
 class SuperAdminPermission(BasePermission):
-  message = {"code": 500, 'data': "无权访问"}
+  message = {"code": 500, 'msg': "无权访问"}
   def has_permission(self, request, view):
-      print(request.user[0].role)
       if request.user[0].role == 1:
             return True
       return False

@@ -34,7 +34,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                 refresh["status"] = user.status
                 if user.status == 0:
                     return {"msg":'你的账号被禁止登录',"code":500}
-                data = {"msg":"登陆成功","code":200,"id": user.id, "token": str(refresh.access_token), "refresh": str(refresh)}
+                data = {"msg":"登陆成功","role":user.role,"code":200,"username":user.username,"id": user.id, "token": str(refresh.access_token), "refresh": str(refresh)}
                 return data
             return {"msg":'账号或密码错误',"code":500}
         except Exception as e:

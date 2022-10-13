@@ -13,9 +13,7 @@ const http = axios.create({
 http.interceptors.request.use(
   function (config) {
     if (localStorage.token) {
-      // config.headers.Authorization = 'JWT ' + (localStorage.token || '')
-      config.headers.Authorization =
-        'JWT ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY1NjgyMTY1LCJpYXQiOjE2NjU2Mzg5NjUsImp0aSI6IjFkMWY2NjgxNWQ0MTQwNmM5ZjI5Mzk4OWUyOTAzMDIyIiwidXNlcl9pZCI6MjczLCJuYW1lIjoibHhoIiwicm9sZSI6MCwic3RhdHVzIjoxfQ.smZNup22QkjSt5-h4VuFqnyzDA8T4mJPh6fjPVxltq4'
+      config.headers.Authorization = 'JWT ' + (localStorage.token || '')
     }
     return config
   },
@@ -35,7 +33,7 @@ http.interceptors.response.use(
       Vue.prototype.$message({
         type: 'error',
         // 弹窗的内容 在status中的message定义
-        message: err
+        message: err.response.data
       })
       loadingInstance.close()
       // if (err.response.status === 401) {
