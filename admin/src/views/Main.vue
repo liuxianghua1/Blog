@@ -21,6 +21,13 @@
               <el-menu-item index="/home/user_list">用户列表</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
+          <el-submenu index="2">
+            <template slot="title"><i class="el-icon-edit-outline"></i>文章管理</template>
+            <el-menu-item-group>
+              <el-menu-item index="/home/article_create">发布文章</el-menu-item>
+              <el-menu-item index="/home/article_list">文章列表</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
         </el-menu>
       </el-aside>
       <el-main>

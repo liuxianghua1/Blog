@@ -83,3 +83,15 @@ class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixin
   queryset = Article.objects.all().order_by("-createtime")
   serializer_class = ArticleSerializer
   pagination_class = MyPageNumberPagination
+
+  @action(methods=["put"],detail=True)
+  def article_status(self, request,pk):
+      status = request.data.get('status')
+      article = Article.objects.filter(id=pk)
+      # password = make_password(request.data.get('password'))
+      # role = request.data.get('role')
+      if len(request.data) == 1 and status in [0,1]:
+        article.update(status=status)
+        return Response({'msg':'状态修改成功','code':201})
+      # user.update(status=status, password=password, role=role)
+      # return Response({'msg':'修改成功','code':201})

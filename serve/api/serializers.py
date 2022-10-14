@@ -33,7 +33,8 @@ class CategorysSerializer(serializers.ModelSerializer):
 class ArticleSerializer(serializers.ModelSerializer):
     categorys = CategorysSerializer(many=True)
     author = serializers.CharField(source='author.username',read_only=True)
-    author_id = serializers.CharField(source='author.id',read_only=True)
+    author_role = serializers.IntegerField(source='author.role',read_only=True)
+    author_id = serializers.IntegerField(source='author.id',read_only=True)
     createtime = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
     class Meta:
         model = Article

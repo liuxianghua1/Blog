@@ -11,7 +11,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="submitForm('model')">提交</el-button>
+          <el-button type="primary" native-type="“submit”" @click="submitForm('model')">提交</el-button>
           <el-button @click="resetForm('model')">重置</el-button>
         </el-form-item>
       </el-form>
