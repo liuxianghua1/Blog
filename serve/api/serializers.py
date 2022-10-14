@@ -1,9 +1,12 @@
 from rest_framework import serializers #序列化器
-from .models import Users   #用户模型
+from .models import Users,Article,Category   #用户模型
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer #jwt
 from django.utils import timezone as datetime
 from django.contrib.auth.hashers import check_password #密码解码
 
+
+
+# 用户序列化器
 class UsersSerializer(serializers.ModelSerializer):
   lastlogintime = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
   password =  serializers.CharField(write_only=True)
@@ -15,7 +18,26 @@ class UsersSerializer(serializers.ModelSerializer):
     # fields = ["id","username","phone","createtime","lastlogintime","status","role"]
     # 查询这里可以不用改 密码永远不能显示出来
 
+    def get_username(self,obj):
+        #  返回 obj对象中调用外键kind中的school_name字段 (学校表中school_name学校名称)
+        return obj.username
 
+# 分类序列化器
+class CategorysSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
+# 文章序列化器
+class ArticleSerializer(serializers.ModelSerializer):
+    categorys = CategorysSerializer(many=True)
+    author = serializers.CharField(source='author.username',read_only=True)
+    author_id = serializers.CharField(source='author.id',read_only=True)
+    createtime = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
+    class Meta:
+        model = Article
+        fields = "__all__"
  
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     # 自定义登录认证，使用自有用户表

@@ -1,6 +1,6 @@
 from rest_framework import mixins,viewsets
-from .models import Users
-from .serializers import UsersSerializer,MyTokenObtainPairSerializer
+from .models import Users,Article
+from .serializers import UsersSerializer,MyTokenObtainPairSerializer,ArticleSerializer
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -11,14 +11,18 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from rest_framework.permissions import BasePermission
 
+
+# token类
 class FormulaTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
+# 分页类
 class MyPageNumberPagination(PageNumberPagination):
   page_size_query_param = "size"
   page_size = 10
   max_page_size = 50
 
+# 权限类
 class SuperAdminPermission(BasePermission):
   message = {"code": 500, 'msg': "无权访问"}
   def has_permission(self, request, view):
@@ -26,7 +30,7 @@ class SuperAdminPermission(BasePermission):
             return True
       return False
 
-
+# 用户视图
 class UsersModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.DestroyModelMixin,viewsets.GenericViewSet):
   permission_classes = [SuperAdminPermission]
   queryset = Users.objects.all().order_by("-id")
@@ -72,3 +76,10 @@ class UsersModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.D
       return Response({'msg':'修改成功','code':201})
       
     
+
+
+
+class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.DestroyModelMixin,viewsets.GenericViewSet):
+  queryset = Article.objects.all().order_by("-createtime")
+  serializer_class = ArticleSerializer
+  pagination_class = MyPageNumberPagination

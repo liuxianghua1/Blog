@@ -26,7 +26,6 @@ class TokenAuth:
 
         # 提取 Authorization 中的 JWT Token 信息
         headers_token = headers_token.split(jwt + ' ')[1]
-        print(headers_token)
         
         decoded_data = jwt_decode(headers_token, SECRET_KEY, algorithms=["HS256"])
         checkUser = Users.objects.filter(id=decoded_data.get('user_id'),username=decoded_data.get('name'))
@@ -37,5 +36,3 @@ class TokenAuth:
         if checkUser:
           return checkUser,"1"
         #   return checkUser,headers_token 应该返回这个
-
-

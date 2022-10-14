@@ -4,6 +4,7 @@ from api import views
 
 router = DefaultRouter()
 router.register('users',views.UsersModelViewSet,basename="users")
+router.register('articles',views.ArticlesModelViewSet,basename="articles")
 
 urlpatterns = [
     path('login/', views.FormulaTokenObtainPairView.as_view(), name='login')
