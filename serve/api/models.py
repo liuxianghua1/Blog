@@ -72,11 +72,10 @@ class Article(models.Model):
     createtime = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=64,null=True,blank=True)
     body = models.TextField(null=True,blank=True)
-    # 文章预览图
-    image_url = models.URLField(null=True,blank=True)
+    # 文章封面图
+    image_url = models.CharField(null=True,blank=True,max_length=64)
     clicks = models.IntegerField(default=0)
     status = models.SmallIntegerField(choices=status_choices, default=1)
-    # asd = models.CharField(max_length=32)
     author = models.ForeignKey(to='Users',to_field='id',on_delete=models.SET_NULL,null=True)
 
     categorys = models.ManyToManyField("Category",db_table="db_article2category")

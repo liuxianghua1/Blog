@@ -3,6 +3,7 @@ from .models import Users,Article,Category   #用户模型
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer #jwt
 from django.utils import timezone as datetime
 from django.contrib.auth.hashers import check_password #密码解码
+from drf_writable_nested import WritableNestedModelSerializer
 
 
 
@@ -30,14 +31,16 @@ class CategorysSerializer(serializers.ModelSerializer):
 
 
 # 文章序列化器
-class ArticleSerializer(serializers.ModelSerializer):
+class ArticleSerializer(WritableNestedModelSerializer,serializers.ModelSerializer):
     categorys = CategorysSerializer(many=True)
     author = serializers.CharField(source='author.username',read_only=True)
     author_role = serializers.IntegerField(source='author.role',read_only=True)
-    author_id = serializers.IntegerField(source='author.id',read_only=True)
+    # source='author.id'
+    author_id = serializers.IntegerField(write_only=True)
     createtime = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
     class Meta:
         model = Article
+        ordering = ['createtime']
         fields = "__all__"
  
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

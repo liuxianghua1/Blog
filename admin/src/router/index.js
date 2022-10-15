@@ -5,6 +5,7 @@ import UserList from '../views/user/UserList.vue'
 import UserCreate from '../views/user/UserCreate.vue'
 import Login from '../views/login/Login.vue'
 import ArticleList from '../views/article/ArticleList.vue'
+import CreateArticle from '../views/article/CreateArticle.vue'
 
 Vue.use(VueRouter)
 
@@ -37,6 +38,15 @@ const routes = [
       {
         path: 'article_list',
         component: ArticleList
+      },
+      {
+        path: 'article_create',
+        component: CreateArticle
+      },
+      {
+        path: 'article_update/:id',
+        component: CreateArticle,
+        props: true
       }
     ]
   }

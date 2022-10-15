@@ -100,7 +100,6 @@ export default {
     async create() {
       // admin 15000485500
       const res = await this.$http.post('/api/users/createuser/', this.ruleForm)
-      console.log(res)
       if (res.data.code === 201) {
         // 创建成功
         this.$message({

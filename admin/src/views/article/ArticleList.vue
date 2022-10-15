@@ -1,13 +1,13 @@
 <template>
   <div>
     <el-button @click="clearFilter" style="margin-bottom: 20px">清除所有过滤条件</el-button>
-    <el-table ref="filterTable" border :row-class-name="tableRowClassName" :default-sort="{ prop: 'createtime' }" :data="tableData.filter(data => !search || data.title.toLowerCase().includes(search.toLowerCase()))" style="width: 100%">
+    <el-table ref="filterTable" border :row-class-name="tableRowClassName" :data="tableData.filter(data => !search || data.title.toLowerCase().includes(search.toLowerCase()))" style="width: 100%">
       <el-table-column type="index" :index="table_index" width="50" label="序号"> </el-table-column>
       <el-table-column prop="id" label="id" width="50"></el-table-column>
       <el-table-column prop="title" label="标题"></el-table-column>
       <el-table-column prop="image_url" label="封面">
         <template slot-scope="scope">
-          <el-image v-if="scope.row.image_url" :src="scope.row.image_url" :preview-src-list="[scope.row.image_url]"> </el-image>
+          <el-image v-if="scope.row.image_url" :src="'/uploads/' + scope.row.image_url" :preview-src-list="['/uploads/' + scope.row.image_url]"> </el-image>
           <el-image v-else src="https://fastly.jsdelivr.net/gh/liuxianghua1/DemoPicture@main/16657306129891665730612214.png" :preview-src-list="['https://fastly.jsdelivr.net/gh/liuxianghua1/DemoPicture@main/16657306129891665730612214.png']"> </el-image>
         </template>
       </el-table-column>
@@ -43,7 +43,7 @@
           <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
         </template>
         <template slot-scope="scope">
-          <el-button size="medium" type="primary" round @click="$router.push(`/home/user_updata/${scope.row.id}`)">编辑</el-button>
+          <el-button size="medium" type="primary" round @click="$router.push(`/home/article_update/${scope.row.id}`)">编辑</el-button>
           <el-button size="medium" type="danger" round @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -86,8 +86,7 @@ export default {
     },
     // 文章状态更改方法 这个id是从scope.row.id中传过来的
     statusChange(id, status) {
-      console.log('待定')
-      this.$http.put(`/api/articles/${id}/article_status/`, { status: status === 1 ? 0 : 1 }).then(() => {
+      this.$http.put(`/api/articles/${id}/update_article/`, { status: status === 1 ? 0 : 1 }).then(() => {
         this.fetch(this.paginations.page_num, this.paginations.page_size)
       })
     },
@@ -138,7 +137,6 @@ export default {
       // console.log(res) res.data.result
       // 分页总数赋予
       this.paginations.total = res.data.count
-
       if (res.status === 200) {
         this.tableData = res.data.results
         // 数据赋予、全屏loading 关闭

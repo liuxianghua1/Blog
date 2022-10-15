@@ -10,17 +10,74 @@ from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from rest_framework.permissions import BasePermission
-
-
-# token类
-class FormulaTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
+from django.utils import timezone as datetime
+import random
+# 图片上传
+from rest_framework.parsers import MultiPartParser,JSONParser,FormParser
 
 # 分页类
 class MyPageNumberPagination(PageNumberPagination):
   page_size_query_param = "size"
   page_size = 10
   max_page_size = 50
+
+
+# 文章类
+class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.DestroyModelMixin,viewsets.GenericViewSet):
+  queryset = Article.objects.all().order_by("-id","createtime","title")
+  serializer_class = ArticleSerializer
+  pagination_class = MyPageNumberPagination
+  parser_classes = [JSONParser,FormParser,MultiPartParser]
+
+  # 文章发布方法
+  @action(methods=["post"],detail=False)
+  def create_article(self,request):
+    request.data['author_id'] = request.user[0].id
+    request.data['image_url'] = request.data['image_name']
+    request.data['categorys'] = request.data['categorysList']
+    print(request.data['categorys'])
+    ser = ArticleSerializer(data=request.data)
+    if not ser.is_valid():
+        return Response({"code": 400, "data": ser.errors})
+    ser.save()
+    return  Response({'msg':"文章发布成功",'code':200})
+    
+
+   # 更新方法
+  @action(methods=["put"],detail=True)
+  def update_article(self, request,pk):
+      status = request.data.get('status')
+      article = Article.objects.filter(id=pk)
+      # password = make_password(request.data.get('password'))
+      # role = request.data.get('role')
+      if len(request.data) == 1 and status in [0,1]:
+        article.update(status=status)
+        return Response({'msg':'状态修改成功','code':201})
+      # user.update(status=status, password=password, role=role)
+      # return Response({'msg':'修改成功','code':201})
+
+  # 图片上传方法
+  @action(methods=["post"],detail=False)
+  def image_upload(self,request):
+    img = request.data.get("file")
+    img_type = img.name.split('.')[-1]
+    if img_type not in['png', 'jpg', 'jpeg']:
+      return  Response({'msg':"上传图片类型不正确",'code':500})
+    newfielname = datetime.now().strftime('%Y%m%d%H%M%S') + str(random.randint(10000,99999)) + '.' + img_type  #采用时间和随机数重命名图片
+    path = "../admin/public/uploads/" +newfielname
+    with open(path,'wb') as f:  #二进制写入
+                for i in img.chunks():
+                    f.write(i)
+    return  Response({'msg':"成功",'code':200,"filename":newfielname})
+
+
+
+ 
+
+# token类
+class FormulaTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
 
 # 权限类
 class SuperAdminPermission(BasePermission):
@@ -79,19 +136,4 @@ class UsersModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.D
 
 
 
-class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.DestroyModelMixin,viewsets.GenericViewSet):
-  queryset = Article.objects.all().order_by("-createtime")
-  serializer_class = ArticleSerializer
-  pagination_class = MyPageNumberPagination
 
-  @action(methods=["put"],detail=True)
-  def article_status(self, request,pk):
-      status = request.data.get('status')
-      article = Article.objects.filter(id=pk)
-      # password = make_password(request.data.get('password'))
-      # role = request.data.get('role')
-      if len(request.data) == 1 and status in [0,1]:
-        article.update(status=status)
-        return Response({'msg':'状态修改成功','code':201})
-      # user.update(status=status, password=password, role=role)
-      # return Response({'msg':'修改成功','code':201})
