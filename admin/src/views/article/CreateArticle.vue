@@ -16,7 +16,18 @@
 
       <!-- 富文本编辑器 -->
       <el-form-item label="正文">
-        <vue-editor id="editor" :editor-toolbar="customToolbar" useCustomImageHandler @image-added="handleImageAdded" v-model="model.body" />
+        <!-- <vue-editor id="editor" :editor-toolbar="customToolbar" useCustomImageHandler @image-added="handleImageAdded" v-model="model.body" /> -->
+        <quill-editor ref="myQuillEditor" v-model="model.body" :options="editorOption" />
+
+        <el-upload v-show="false" drag multiple :headers="getAuthHeaders()" class="quill-upload" :on-success="quillSuccess" action="http://127.0.0.1:8000/api/articles/image_upload/">
+          <el-button size="small" type="primary">点击上传</el-button>
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">
+            将文件拖到此处，或
+            <em>点击上传</em>
+          </div>
+          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
       </el-form-item>
 
       <el-form-item label="分类">
@@ -37,15 +48,38 @@
 </template>
 
 <script>
-import { VueEditor } from 'vue2-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+
+import { quillEditor } from 'vue-quill-editor'
 
 export default {
+  components: {
+    quillEditor
+  },
   props: {
     id: {}
   },
   data() {
     return {
-      customToolbar: [['clean', 'link', 'video', 'image', 'code-block']],
+      editorOption: {
+        // 编辑器配置
+        placeholder: '请在这里写点什么吧！',
+        theme: 'snow',
+        modules: {
+          toolbar: {
+            container: [
+              ['blockquote', 'code-block', 'clean', 'video', 'image', { color: [] }],
+              [{ header: 1 }, { header: 2 }]
+            ],
+            handlers: {
+              image: function (value) {
+                document.querySelector('.quill-upload .el-icon-upload').click()
+              }
+            }
+          }
+        }
+      },
       category: [
         { id: 1, name: 'python' },
         { id: 2, name: 'web' },
@@ -64,6 +98,64 @@ export default {
     }
   },
   methods: {
+    init() {
+      const quill = this.$refs.myQuillEditor.quill
+      quill.root.addEventListener(
+        'paste',
+        evt => {
+          if (evt.clipboardData && evt.clipboardData.files && evt.clipboardData.files.length) {
+            evt.preventDefault()
+            ;[].forEach.call(evt.clipboardData.files, file => {
+              console.log(file)
+              if (!file.type.match(/^image\/(gif|jpe?g|a?png|bmp)/i)) {
+                return this.$message.error('格式错误')
+              }
+              this.uploadToServer(file)
+            })
+          }
+        },
+        false
+      )
+    },
+    // 修改粘贴图片为上传到服务器
+    uploadToServer(file) {
+      const fm = new FormData()
+      fm.append('file', file)
+      this.$http
+        .post('/api/articles/image_upload/', fm)
+        .then(res => {
+          if (res.data.code === 200) {
+            const quill = this.$refs.myQuillEditor.quill
+            const pos = quill.getSelection().index
+            // 插入图片到光标位置
+            quill.insertEmbed(pos, 'image', '/uploads/' + res.data.filename)
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.data.msg
+            })
+          }
+        })
+        .catch(err => {
+          this.$message({
+            type: 'error',
+            message: err
+          })
+        })
+    },
+
+    quillSuccess(res) {
+      if (res) {
+        // 获取文本编辑器
+        const quill = this.$refs.myQuillEditor.quill
+        // 获取光标位置
+        const pos = quill.getSelection().index
+        // 插入图片到光标位置
+        quill.insertEmbed(pos, 'image', '/uploads/' + res.filename)
+      } else {
+        this.$essage.error('图片插入失败')
+      }
+    },
     // 封面上传    // 成功上传封面执行的方法
     // 图片上传的流程 先上传给后端 后端把路径返回给我 我在给model 然后随着表单一起传给数据库
     afterUpload(res) {
@@ -84,28 +176,6 @@ export default {
       return extension
     },
 
-    // 富文本编辑器上传图片的方法
-    handleImageAdded(file, Editor, cursorLocation, resetUploader) {
-      const flag = this.beforeUpload(file)
-      if (flag) {
-        const fm = new FormData()
-        fm.append('file', file)
-        this.$http
-          .post('/api/articles/image_upload/', fm)
-          .then(res => {
-            Editor.insertEmbed(cursorLocation, 'image', '/uploads/' + res.data.filename)
-            // 把光标移至图片后面
-            Editor.setSelection(cursorLocation + 1)
-            resetUploader()
-          })
-          .catch(err => {
-            this.$message({
-              type: 'error',
-              message: err
-            })
-          })
-      }
-    },
     statusChange() {
       this.model.status === 1 ? (this.model.status = 0) : (this.model.status = 1)
     },
@@ -136,7 +206,9 @@ export default {
 
     // 再写一个获取所有分类的方法
   },
-  components: { VueEditor }
+  mounted() {
+    this.init()
+  }
 }
 </script>
 
@@ -162,5 +234,11 @@ export default {
   width: 178px;
   height: 178px;
   display: block;
+}
+.quill-editor .ql-container {
+  height: 500px;
+}
+body .el-table::before {
+  z-index: inherit;
 }
 </style>
