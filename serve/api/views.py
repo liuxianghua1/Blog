@@ -104,7 +104,7 @@ class SuperAdminPermission(BasePermission):
 # 用户视图
 class UsersModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.DestroyModelMixin,viewsets.GenericViewSet):
   permission_classes = [SuperAdminPermission]
-  queryset = Users.objects.all().order_by("-id")
+  queryset = Users.objects.all().order_by("-lastlogintime",)
   serializer_class = UsersSerializer
   pagination_class = MyPageNumberPagination
 

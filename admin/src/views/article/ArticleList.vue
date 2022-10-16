@@ -1,8 +1,7 @@
 <template>
   <div>
-    <!-- <el-backtop target=".page-component__scroll .el-scrollbar__wrap" visibility-height="100"></el-backtop> -->
     <el-button @click="clearFilter" style="margin-bottom: 20px">清除所有过滤条件</el-button>
-    <el-table ref="filterTable" border :row-class-name="tableRowClassName" :data="tableData.filter(data => !search || data.title.toLowerCase().includes(search.toLowerCase()))" style="width: 100%">
+    <el-table ref="filterTable" border :row-class-name="tableRowClassName" :data="tableData.filter(data => !search || data.title.toLowerCase().includes(search.toLowerCase())) " style="width: 100%">
       <el-table-column type="index" :index="table_index" width="50" label="序号"> </el-table-column>
       <el-table-column prop="id" label="id" width="50"></el-table-column>
       <el-table-column prop="title" label="标题"></el-table-column>
@@ -15,7 +14,9 @@
       </el-table-column>
       <el-table-column prop="categorys" label="分类">
         <template slot-scope="scope">
-          <el-tag style="margin: 0 5px 5px 0" v-for="i in scope.row.categorys" :key="i.id"> {{ i.name }}</el-tag>
+          <el-tag style="margin: 0 5px 5px 0" v-for="i in scope.row.categorys" :key="i.id">
+            {{ i.name }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="author" label="作者"></el-table-column>
@@ -64,8 +65,6 @@ export default {
   data() {
     return {
       search: '',
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-      srcList: ['https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg', 'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'],
       tableData: [],
       paginations: {
         page_index: 1, // 序号
