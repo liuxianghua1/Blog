@@ -25,9 +25,7 @@ http.interceptors.request.use(
 // 服务端返回错误 有message 就弹出
 http.interceptors.response.use(
   res => {
-    const loadingInstance = Vue.prototype.$loading()
     if (res) {
-      loadingInstance.close()
       return res
     }
   },

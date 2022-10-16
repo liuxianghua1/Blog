@@ -7,19 +7,15 @@
       <el-table-column prop="id" label="id"> </el-table-column>
       <el-table-column prop="name" label="分类">
         <template slot-scope="scope">
-          <div slot="reference" class="name-wrapper">
-            <el-tag>{{ scope.row.name }}</el-tag>
-          </div>
+          <el-popover transition="el-zoom-in-top" :visible-arrow="false" placement="top" width="250" height="40" trigger="click">
+            <el-input placeholder="在这里更新你的分类名" v-model="updateCategory" @keyup.enter.native="createCategoryMethods(scope.row)" @blur="createCategoryMethods(scope.row)"> </el-input>
+            <el-tag slot="reference">{{ scope.row.name }}</el-tag>
+          </el-popover>
         </template>
       </el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-popover placement="top" width="250" height="40" trigger="click">
-            <el-input placeholder="在这里更新你的分类名" v-model="updateCategory" ref="updateCategory" @keyup.enter.native="createCategoryMethods(scope.row)" @blur="createCategoryMethods(scope.row)"> </el-input>
-            <el-button slot="reference" size="medium" type="primary" round style="margin-right: 10px">编辑</el-button>
-          </el-popover>
-
           <el-button size="medium" type="danger" round @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
