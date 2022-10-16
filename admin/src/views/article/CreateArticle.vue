@@ -12,6 +12,7 @@
           <img v-if="model.image_url" :src="model.image_url" class="avatar" />
           <i v-else style="line-height: 178px" class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
+        <el-button icon="el-icon-delete" @click="deleteImage()" type="text">删除封面</el-button>
       </el-form-item>
 
       <!-- 富文本编辑器 -->
@@ -86,6 +87,10 @@ export default {
     }
   },
   methods: {
+    // 删除封面的方法
+    deleteImage() {
+      this.model.image_url = ''
+    },
     // 切换富文本编辑器的风格
     changeEditorTheme() {
       if (this.editorOption.theme === 'bubble') {
@@ -190,7 +195,11 @@ export default {
       }
       this.model.categorysList = list
       this.model.image_name = this.image_name
-      const res = await this.$http.post('/api/articles/create_article/', this.model)
+      if (this.id) {
+        var res = await this.$http.put(`/api/articles/${this.id}/update_article/`, this.model)
+      } else {
+        res = await this.$http.post('/api/articles/create_article/', this.model)
+      }
       if (res.data.code === 200) {
         // 创建成功
         this.$message({
@@ -257,6 +266,10 @@ export default {
 </script>
 
 <style>
+/* body {
+  border-bottom: 0px solid #dfe6ec !important;
+  /*margin-bottom: 10px;*/
+
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

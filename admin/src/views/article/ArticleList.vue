@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- <el-backtop target=".page-component__scroll .el-scrollbar__wrap" visibility-height="100"></el-backtop> -->
     <el-button @click="clearFilter" style="margin-bottom: 20px">清除所有过滤条件</el-button>
     <el-table ref="filterTable" border :row-class-name="tableRowClassName" :data="tableData.filter(data => !search || data.title.toLowerCase().includes(search.toLowerCase()))" style="width: 100%">
       <el-table-column type="index" :index="table_index" width="50" label="序号"> </el-table-column>
@@ -8,7 +9,8 @@
       <el-table-column prop="image_url" label="封面">
         <template slot-scope="scope">
           <el-image v-if="scope.row.image_url" :src="'/uploads/' + scope.row.image_url" :preview-src-list="['/uploads/' + scope.row.image_url]"> </el-image>
-          <el-image v-else src="https://fastly.jsdelivr.net/gh/liuxianghua1/DemoPicture@main/16657306129891665730612214.png" :preview-src-list="['https://fastly.jsdelivr.net/gh/liuxianghua1/DemoPicture@main/16657306129891665730612214.png']"> </el-image>
+          <span v-else>未传封面</span>
+          <!-- <el-empty v-else :image-size="50" description="未上传图片"></el-empty> -->
         </template>
       </el-table-column>
       <el-table-column prop="categorys" label="分类">

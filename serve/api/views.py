@@ -52,13 +52,23 @@ class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixin
   def update_article(self, request,pk):
       status = request.data.get('status')
       article = Article.objects.filter(id=pk)
-      # password = make_password(request.data.get('password'))
-      # role = request.data.get('role')
       if len(request.data) == 1 and status in [0,1]:
         article.update(status=status)
         return Response({'msg':'状态修改成功','code':201})
-      # user.update(status=status, password=password, role=role)
-      # return Response({'msg':'修改成功','code':201})
+      else:
+        image_url = request.data.get('image_url').split("/")[-1]
+        print(image_url)
+        title = request.data.get('title')
+        body = request.data.get('body')
+        categorys = request.data.get('categorysList')
+        data={
+          'image_url':image_url,'title':title,'body':body,'categorys':categorys,'status':status,'author_id':request.user[0].id
+        }
+        ser = ArticleSerializer(article.first(),data=data)
+        if not ser.is_valid():
+          return Response({"code": 400, "data": ser.errors})
+        ser.save()
+        return Response({'msg':'修改成功','code':200})
 
   # 图片上传方法
   @action(methods=["post"],detail=False)

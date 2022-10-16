@@ -1,5 +1,5 @@
 <template>
-  <el-container style="height: 100vh; border: 1px solid #eee">
+  <el-container style="height: 100vh">
     <el-header style="text-align: right; font-size: 12px">
       <el-dropdown>
         <span> {{ username }}</span>
