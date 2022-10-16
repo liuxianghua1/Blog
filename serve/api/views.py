@@ -22,9 +22,38 @@ class MyPageNumberPagination(PageNumberPagination):
   max_page_size = 50
 
 # 提供分类
-class CategorysModelViewSet(viewsets.ModelViewSet):
+class CategorysModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.DestroyModelMixin,viewsets.GenericViewSet):
   queryset = Category.objects.all().order_by("id")
   serializer_class = CategorysSerializer
+
+  @action(methods=["post"],detail=False)
+  def create_category(self, request):
+      name = request.data.get('name')
+      nameExist = Category.objects.filter(name=name)
+
+      if nameExist:
+        return Response({'msg':'分类名已存在','code':500})
+      else:
+        ser = CategorysSerializer(data=request.data)
+        if not ser.is_valid():
+            return Response({"code": 400, "data": ser.errors})
+        ser.save()
+        return Response({'msg':'添加成功','code':200})
+
+
+  @action(methods=["put"],detail=True)
+  def update_category(self, request,pk):
+      name = request.data.get('name')
+      nameExist = Category.objects.filter(name=name)
+
+      if nameExist:
+        return Response({'msg':'分类名已存在','code':500})
+      else:
+        ser = CategorysSerializer(Category.objects.filter(id=pk).first(),data=request.data)
+        if not ser.is_valid():
+            return Response({"code": 400, "data": ser.errors})
+        ser.save()
+        return Response({'msg':'更新成功','code':200})
 
 
 # 文章类
@@ -40,8 +69,10 @@ class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixin
     request.data['author_id'] = request.user[0].id
     request.data['image_url'] = request.data['image_name']
     request.data['categorys'] = request.data['categorysList']
+    print(request.data['categorys'])
     ser = ArticleSerializer(data=request.data)
     if not ser.is_valid():
+        print(ser.errors)
         return Response({"code": 400, "data": ser.errors})
     ser.save()
     return  Response({'msg':"文章发布成功",'code':200})

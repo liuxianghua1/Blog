@@ -30,14 +30,6 @@ class CategorysSerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
-    def validate_name(self, value):
-        print(value)
-        exists = Category.objects.filter(name=value).exists()
-        if exists:
-            return Response({'msg':'分类名已存在','code':500})
-            # return ValidationError("分类名已存在")
-        return value
-
 
 # 文章序列化器
 class ArticleSerializer(WritableNestedModelSerializer,serializers.ModelSerializer):

@@ -42,14 +42,14 @@ export default {
       if (row.id) {
         if (this.updateCategory.trim() !== '') {
           this.$http
-            .put(`api/categorys/${row.id}/`, { name: this.updateCategory })
+            .put(`api/categorys/${row.id}/update_category/`, { name: this.updateCategory })
             .then(res => {
-              console.log(res)
-
-              if (res.status === 200) {
-                this.fetch()
-                this.updateCategory = ''
-              }
+              this.$message({
+                message: res.data.msg,
+                type: 'info'
+              })
+              this.fetch()
+              this.updateCategory = ''
             })
             .catch(() => {
               this.updateCategory = ''
@@ -59,9 +59,13 @@ export default {
         // 查重
         if (this.createCategory.trim() !== '') {
           this.$http
-            .post('api/categorys/', { name: this.createCategory })
+            .post('api/categorys/create_category/', { name: this.createCategory })
             .then(res => {
               if (res) {
+                this.$message({
+                  message: res.data.msg,
+                  type: 'info'
+                })
                 this.fetch()
                 this.createCategory = ''
               }
