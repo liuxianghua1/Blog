@@ -1,6 +1,6 @@
 from rest_framework import mixins,viewsets
-from .models import Users,Article
-from .serializers import UsersSerializer,MyTokenObtainPairSerializer,ArticleSerializer
+from .models import Users,Article,Category
+from .serializers import UsersSerializer,MyTokenObtainPairSerializer,ArticleSerializer,CategorysSerializer
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -21,6 +21,11 @@ class MyPageNumberPagination(PageNumberPagination):
   page_size = 10
   max_page_size = 50
 
+# 提供分类
+class CategorysModelViewSet(viewsets.ModelViewSet):
+  queryset = Category.objects.all().order_by("id")
+  serializer_class = CategorysSerializer
+
 
 # 文章类
 class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.DestroyModelMixin,viewsets.GenericViewSet):
@@ -35,7 +40,6 @@ class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixin
     request.data['author_id'] = request.user[0].id
     request.data['image_url'] = request.data['image_name']
     request.data['categorys'] = request.data['categorysList']
-    print(request.data['categorys'])
     ser = ArticleSerializer(data=request.data)
     if not ser.is_valid():
         return Response({"code": 400, "data": ser.errors})

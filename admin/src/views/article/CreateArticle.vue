@@ -16,17 +16,11 @@
 
       <!-- 富文本编辑器 -->
       <el-form-item label="正文">
-        <!-- <vue-editor id="editor" :editor-toolbar="customToolbar" useCustomImageHandler @image-added="handleImageAdded" v-model="model.body" /> -->
-        <quill-editor ref="myQuillEditor" v-model="model.body" :options="editorOption" />
+        <el-button @click="changeEditorTheme()" type="text">切换编辑器风格,当前配置为:{{ editorOption.theme }}。</el-button>
 
+        <quill-editor :key="editorOption.theme" ref="myQuillEditor" v-model="model.body" :options="editorOption" />
         <el-upload v-show="false" drag multiple :headers="getAuthHeaders()" class="quill-upload" :on-success="quillSuccess" action="http://127.0.0.1:8000/api/articles/image_upload/">
-          <el-button size="small" type="primary">点击上传</el-button>
           <i class="el-icon-upload"></i>
-          <div class="el-upload__text">
-            将文件拖到此处，或
-            <em>点击上传</em>
-          </div>
-          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
         </el-upload>
       </el-form-item>
 
@@ -50,6 +44,7 @@
 <script>
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 import { quillEditor } from 'vue-quill-editor'
 
@@ -65,13 +60,10 @@ export default {
       editorOption: {
         // 编辑器配置
         placeholder: '请在这里写点什么吧！',
-        theme: 'snow',
+        theme: localStorage.EditorTheme ? localStorage.EditorTheme : 'snow',
         modules: {
           toolbar: {
-            container: [
-              ['blockquote', 'code-block', 'clean', 'video', 'image', { color: [] }],
-              [{ header: 1 }, { header: 2 }]
-            ],
+            container: [['blockquote', 'code-block', 'clean', 'video', 'image', { header: 1 }, { header: 2 }, { color: [] }]],
             handlers: {
               image: function (value) {
                 document.querySelector('.quill-upload .el-icon-upload').click()
@@ -80,11 +72,7 @@ export default {
           }
         }
       },
-      category: [
-        { id: 1, name: 'python' },
-        { id: 2, name: 'web' },
-        { id: 3, name: 'vue' }
-      ],
+      category: [],
       model: {
         body: '',
         title: '',
@@ -98,6 +86,17 @@ export default {
     }
   },
   methods: {
+    // 切换富文本编辑器的风格
+    changeEditorTheme() {
+      if (this.editorOption.theme === 'bubble') {
+        this.editorOption.theme = 'snow'
+        localStorage.EditorTheme = 'snow'
+      } else {
+        this.editorOption.theme = 'bubble'
+        localStorage.EditorTheme = 'bubble'
+      }
+    },
+    // 监听富文本编辑器的图片粘贴事件
     init() {
       const quill = this.$refs.myQuillEditor.quill
       quill.root.addEventListener(
@@ -106,7 +105,6 @@ export default {
           if (evt.clipboardData && evt.clipboardData.files && evt.clipboardData.files.length) {
             evt.preventDefault()
             ;[].forEach.call(evt.clipboardData.files, file => {
-              console.log(file)
               if (!file.type.match(/^image\/(gif|jpe?g|a?png|bmp)/i)) {
                 return this.$message.error('格式错误')
               }
@@ -117,7 +115,8 @@ export default {
         false
       )
     },
-    // 修改粘贴图片为上传到服务器
+
+    // 富文本编辑器粘贴图片为上传到服务器
     uploadToServer(file) {
       const fm = new FormData()
       fm.append('file', file)
@@ -144,6 +143,7 @@ export default {
         })
     },
 
+    // 富文本编辑器上传图片的方法(不是粘贴图片)
     quillSuccess(res) {
       if (res) {
         // 获取文本编辑器
@@ -156,8 +156,8 @@ export default {
         this.$essage.error('图片插入失败')
       }
     },
-    // 封面上传    // 成功上传封面执行的方法
-    // 图片上传的流程 先上传给后端 后端把路径返回给我 我在给model 然后随着表单一起传给数据库
+
+    // 成功上传封面执行的方法 封面传给后端后 后端返回给我文件名 然后我在复制给表单 路径+文件名 在一起传送给数据库
     afterUpload(res) {
       this.image_name = res.filename
       this.$set(this.model, 'image_url', '/uploads/' + res.filename)
@@ -175,12 +175,14 @@ export default {
       }
       return extension
     },
-
+    // 改变状态
     statusChange() {
       this.model.status === 1 ? (this.model.status = 0) : (this.model.status = 1)
     },
+    // 发布文章
     async create() {
       const list = []
+
       for (let index = 0; index < this.category.length; index++) {
         if (this.model.categorys.indexOf(this.category[index].id) !== -1) {
           list.push(this.category[index])
@@ -202,12 +204,28 @@ export default {
           message: res.data.msg
         })
       }
-    }
+    },
 
     // 再写一个获取所有分类的方法
+    fetchCategorys() {
+      this.$http
+        .get('api/category/')
+        .then(res => {
+          this.category = res.data
+        })
+        .catch(err => {
+          this.$message({
+            type: 'error',
+            message: err
+          })
+        })
+    }
   },
   mounted() {
     this.init()
+  },
+  created() {
+    this.fetchCategorys()
   }
 }
 </script>
@@ -240,5 +258,8 @@ export default {
 }
 body .el-table::before {
   z-index: inherit;
+}
+.quill-editor {
+  line-height: normal;
 }
 </style>

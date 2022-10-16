@@ -47,16 +47,17 @@ export default {
     },
     async login() {
       const res = await this.$http.post('/api/login/', this.model)
-      console.log(res)
       // 窗口关闭需重新登录
       // sessionStorage.token = res.data.token
 
       // 窗口关闭可继续使用
-      localStorage.token = res.data.token
-      localStorage.id = res.data.id
-      localStorage.username = res.data.username
-      localStorage.role = res.data.role
+
       if (res.data.code === 200) {
+        localStorage.token = res.data.token
+        localStorage.id = res.data.id
+        localStorage.username = res.data.username
+        localStorage.role = res.data.role
+        localStorage.EditorTheme = 'bubble'
         this.$message({
           type: 'success',
           message: res.data.msg
