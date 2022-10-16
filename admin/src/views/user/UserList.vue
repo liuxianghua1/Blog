@@ -122,7 +122,7 @@ export default {
             this.tableData = res.data.results
             this.$message({
               message: `${row.username} 用户删除成功`,
-              type: 'warning'
+              type: 'success'
             })
             // 执行数据获取 刷新表格
             this.fetch(this.paginations.page_num, this.paginations.page_size)

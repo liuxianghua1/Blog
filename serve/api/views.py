@@ -1,4 +1,4 @@
-from rest_framework import mixins,viewsets,generics
+from rest_framework import mixins,viewsets,views
 from .models import Users,Article,Category
 from .serializers import UsersSerializer,MyTokenObtainPairSerializer,ArticleSerializer,CategorysSerializer
 
@@ -179,7 +179,7 @@ class UsersModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.D
       
     
 
-class UpdatePassView(generics.GenericAPIView):
+class UpdatePassView(views.APIView):
   def put(self, request, *args, **kwargs):
     pk = request.user[0].id
     user = Users.objects.filter(id= pk)

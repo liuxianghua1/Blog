@@ -11,7 +11,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" native-type="“submit”" @click="submitForm('model')">提交</el-button>
+          <el-button type="primary" native-type="“submit”" @click.prevent="submitForm('model')">提交</el-button>
           <el-button @click="resetForm('model')">重置</el-button>
         </el-form-item>
       </el-form>
@@ -58,11 +58,13 @@ export default {
         localStorage.username = res.data.username
         localStorage.role = res.data.role
         localStorage.EditorTheme = 'bubble'
+
+        this.$router.push('/')
+
         this.$message({
           type: 'success',
           message: res.data.msg
         })
-        this.$router.push('/')
       } else {
         this.$message({
           type: 'error',

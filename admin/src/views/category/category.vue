@@ -40,9 +40,11 @@ export default {
           this.$http
             .put(`api/categorys/${row.id}/update_category/`, { name: this.updateCategory })
             .then(res => {
+              let flag = ''
+              res.data.code === 200 ? (flag = 'success') : (flag = 'error')
               this.$message({
                 message: res.data.msg,
-                type: 'info'
+                type: flag
               })
               this.fetch()
               this.updateCategory = ''
@@ -57,14 +59,14 @@ export default {
           this.$http
             .post('api/categorys/create_category/', { name: this.createCategory })
             .then(res => {
-              if (res) {
-                this.$message({
-                  message: res.data.msg,
-                  type: 'info'
-                })
-                this.fetch()
-                this.createCategory = ''
-              }
+              let flag = ''
+              res.data.code === 200 ? (flag = 'success') : (flag = 'error')
+              this.$message({
+                message: res.data.msg,
+                type: flag
+              })
+              this.fetch()
+              this.createCategory = ''
             })
             .catch(() => {
               this.createCategory = ''
@@ -86,7 +88,7 @@ export default {
             this.tableData = res.data.results
             this.$message({
               message: `${row.name} 分类删除成功`,
-              type: 'warning'
+              type: 'success'
             })
             this.fetch()
           } else {

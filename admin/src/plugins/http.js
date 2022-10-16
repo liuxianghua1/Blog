@@ -8,6 +8,7 @@ const http = axios.create({
   // baseURL: process.env.VUE_APP_API_URL || '/admin/api',
 
   baseURL: 'http://127.0.0.1:8000/'
+  // baseURL: 'http://10.10.10.114:8000/'
 })
 
 http.interceptors.request.use(

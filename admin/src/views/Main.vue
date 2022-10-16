@@ -22,7 +22,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="updataPassword('form')">确 定</el-button>
+        <el-button type="primary" @click.prevent="updataPassword('form')">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -87,8 +87,8 @@ export default {
   methods: {
     exit() {
       localStorage.clear()
-      this.$message('退出成功')
-      this.$router.push('login')
+      this.$message.success('退出成功')
+      this.$router.push('/login')
     },
     closeDialog() {
       this.form = {
@@ -105,7 +105,7 @@ export default {
             this.$http.put('/api/update_pass/', this.form).then(res => {
               if (res.data.code === 200) {
                 localStorage.clear()
-                this.$router.push('login')
+                this.$router.push('/login')
                 this.$message.success(res.data.msg + '请重新登录')
               } else {
                 this.$message.error(res.data.msg)
