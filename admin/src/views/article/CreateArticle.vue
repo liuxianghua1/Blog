@@ -219,13 +219,39 @@ export default {
             message: err
           })
         })
+    },
+
+    // 获取文章数据的方法
+    fetchArticle() {
+      // console.log('12')
+      this.$http
+        .get(`api/articles/${this.id}/`)
+        .then(res => {
+          this.model = res.data
+          const list = []
+          res.data.categorys.forEach(elem => {
+            list.push(elem.id)
+          })
+          if (this.model.image_url !== '') {
+            this.model.image_url = '/uploads/' + res.data.image_url
+          }
+          this.model.categorys = list
+        })
+        .catch(err => {
+          this.$message({
+            type: 'error',
+            message: err
+          })
+        })
     }
   },
+
   mounted() {
     this.init()
   },
   created() {
     this.fetchCategorys()
+    this.id && this.fetchArticle()
   }
 }
 </script>
