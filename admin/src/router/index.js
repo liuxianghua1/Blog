@@ -1,11 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Main from '../views/Main.vue'
+
 import UserList from '../views/user/UserList.vue'
 import UserCreate from '../views/user/UserCreate.vue'
+
 import Login from '../views/login/Login.vue'
+
 import ArticleList from '../views/article/ArticleList.vue'
 import CreateArticle from '../views/article/CreateArticle.vue'
+
+import CategoryList from '../views/category/category.vue'
 
 Vue.use(VueRouter)
 
@@ -47,6 +52,10 @@ const routes = [
         path: 'article_update/:id',
         component: CreateArticle,
         props: true
+      },
+      {
+        path: 'category_list',
+        component: CategoryList
       }
     ]
   }

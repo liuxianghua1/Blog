@@ -84,7 +84,7 @@ class Article(models.Model):
 
 # 分类模型 # 文章分类多对多模型自动创建
 class Category(models.Model):
-    name = models.CharField(max_length=32)
+    name = models.CharField(max_length=32, unique = True)
 
 
 

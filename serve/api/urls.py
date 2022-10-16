@@ -5,7 +5,7 @@ from api import views
 router = DefaultRouter()
 router.register('users',views.UsersModelViewSet,basename="users")
 router.register('articles',views.ArticlesModelViewSet,basename="articles")
-router.register('category',views.CategorysModelViewSet,basename="category")
+router.register('categorys',views.CategorysModelViewSet,basename="category")
 
 
 urlpatterns = [

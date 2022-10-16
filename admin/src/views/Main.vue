@@ -28,6 +28,8 @@
               <el-menu-item index="/home/article_list">文章列表</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
+
+          <el-menu-item index="/home/category_list"><i class="el-icon-guide"></i>分类列表</el-menu-item>
         </el-menu>
       </el-aside>
       <el-main>

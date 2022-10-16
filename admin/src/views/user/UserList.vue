@@ -118,8 +118,6 @@ export default {
         .then(async () => {
           const res = await this.$http.delete(`/api/users/${row.id}/`)
 
-          const loadingInstance = this.$loading()
-
           if (res.status === 204) {
             this.tableData = res.data.results
             this.$message({
@@ -128,7 +126,6 @@ export default {
             })
             // 执行数据获取 刷新表格
             this.fetch(this.paginations.page_num, this.paginations.page_size)
-            loadingInstance.close()
           }
         })
         .catch(() => {
@@ -143,9 +140,6 @@ export default {
       return (this.paginations.page_index - 1) * this.paginations.page_size + index + 1
     },
     async fetch(page = 1, size = 10) {
-      // 全屏loading开启
-      const loadingInstance = this.$loading()
-
       // 数据获取
       const res = await this.$http.get(`/api/users/?page=${page}&size=${size}`)
       // 分页总数赋予
@@ -153,8 +147,6 @@ export default {
 
       if (res.status === 200) {
         this.tableData = res.data.results
-        // 数据赋予、全屏loading 关闭
-        loadingInstance.close()
       }
     },
     async handleCurrentChange(page) {

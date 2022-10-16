@@ -4,6 +4,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer #jwt
 from django.utils import timezone as datetime
 from django.contrib.auth.hashers import check_password #密码解码
 from drf_writable_nested import WritableNestedModelSerializer
+from rest_framework.response import Response
 
 
 
@@ -28,6 +29,14 @@ class CategorysSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
+
+    def validate_name(self, value):
+        print(value)
+        exists = Category.objects.filter(name=value).exists()
+        if exists:
+            return Response({'msg':'分类名已存在','code':500})
+            # return ValidationError("分类名已存在")
+        return value
 
 
 # 文章序列化器

@@ -218,7 +218,7 @@ export default {
     // 再写一个获取所有分类的方法
     fetchCategorys() {
       this.$http
-        .get('api/category/')
+        .get('api/categorys/')
         .then(res => {
           this.category = res.data
         })

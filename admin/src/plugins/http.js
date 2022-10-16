@@ -25,17 +25,20 @@ http.interceptors.request.use(
 // 服务端返回错误 有message 就弹出
 http.interceptors.response.use(
   res => {
-    return res
+    const loadingInstance = Vue.prototype.$loading()
+    if (res) {
+      loadingInstance.close()
+      return res
+    }
   },
   err => {
     if (err) {
-      const loadingInstance = Vue.prototype.$loading()
       Vue.prototype.$message({
         type: 'error',
         // 弹窗的内容 在status中的message定义
         message: err.response.data
       })
-      loadingInstance.close()
+
       // if (err.response.status === 401) {
       //     router.push('/login')
       // }

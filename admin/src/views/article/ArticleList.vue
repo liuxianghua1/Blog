@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-button @click="clearFilter" style="margin-bottom: 20px">清除所有过滤条件</el-button>
-    <el-table ref="filterTable" border :row-class-name="tableRowClassName" :data="tableData.filter(data => !search || data.title.toLowerCase().includes(search.toLowerCase())) " style="width: 100%">
+    <el-table ref="filterTable" border :row-class-name="tableRowClassName" :data="tableData.filter(data => !search || data.title.toLowerCase().includes(search.toLowerCase()))" style="width: 100%">
       <el-table-column type="index" :index="table_index" width="50" label="序号"> </el-table-column>
       <el-table-column prop="id" label="id" width="50"></el-table-column>
       <el-table-column prop="title" label="标题"></el-table-column>
@@ -105,8 +105,6 @@ export default {
         .then(async () => {
           const res = await this.$http.delete(`/api/articles/${row.id}/`)
 
-          const loadingInstance = this.$loading()
-
           if (res.status === 204) {
             this.tableData = res.data.results
             this.$message({
@@ -115,7 +113,6 @@ export default {
             })
             // 执行数据获取 刷新表格
             this.fetch(this.paginations.page_num, this.paginations.page_size)
-            loadingInstance.close()
           }
         })
         .catch(() => {
@@ -130,9 +127,6 @@ export default {
       return (this.paginations.page_index - 1) * this.paginations.page_size + index + 1
     },
     async fetch(page = 1, size = 10) {
-      // 全屏loading开启
-      const loadingInstance = this.$loading()
-
       // 数据获取
       const res = await this.$http.get(`/api/articles/?page=${page}&size=${size}`)
       // console.log(res) res.data.result
@@ -140,8 +134,6 @@ export default {
       this.paginations.total = res.data.count
       if (res.status === 200) {
         this.tableData = res.data.results
-        // 数据赋予、全屏loading 关闭
-        loadingInstance.close()
       }
     },
     async handleCurrentChange(page) {
