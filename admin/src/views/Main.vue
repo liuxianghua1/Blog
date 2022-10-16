@@ -4,11 +4,27 @@
       <el-dropdown>
         <span> {{ username }}</span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="updated">修改密码</el-dropdown-item>
+          <el-dropdown-item @click.native="dialogFormVisible = true">修改密码</el-dropdown-item>
           <el-dropdown-item @click.native="exit()">退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-header>
+
+    <!-- 修改密码的 -->
+    <el-dialog @close="closeDialog()" title="修改密码" :visible.sync="dialogFormVisible">
+      <el-form :rules="rules" ref="form" :model="form">
+        <el-form-item prop="oldPassword" label="原密码" label-width="120px">
+          <el-input type="password" v-model="form.oldPassword" placeholder="请输入原密码"></el-input>
+        </el-form-item>
+        <el-form-item prop="password" label="新密码" label-width="120px">
+          <el-input type="password" v-model="form.password" placeholder="请输入新密码"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updataPassword('form')">确 定</el-button>
+      </div>
+    </el-dialog>
 
     <el-container>
       <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
@@ -56,7 +72,16 @@ export default {
   data() {
     return {
       username: localStorage.username,
-      role: localStorage.role
+      role: localStorage.role,
+      dialogFormVisible: false,
+      form: {
+        oldPassword: '',
+        password: ''
+      },
+      rules: {
+        oldPassword: [{ required: true, message: '请输入原密码', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入新密码', trigger: 'blur' }]
+      }
     }
   },
   methods: {
@@ -64,6 +89,33 @@ export default {
       localStorage.clear()
       this.$message('退出成功')
       this.$router.push('login')
+    },
+    closeDialog() {
+      this.form = {
+        oldPassword: '',
+        password: ''
+      }
+    },
+    updataPassword(form) {
+      this.$refs[form].validate(valid => {
+        if (valid) {
+          if (this.form.oldPassword === this.form.password) {
+            this.$message.error('原密码不能和新密码一样')
+          } else {
+            this.$http.put('/api/update_pass/', this.form).then(res => {
+              if (res.data.code === 200) {
+                localStorage.clear()
+                this.$router.push('login')
+                this.$message.success(res.data.msg + '请重新登录')
+              } else {
+                this.$message.error(res.data.msg)
+              }
+            })
+          }
+        } else {
+          return false
+        }
+      })
     }
   }
 }

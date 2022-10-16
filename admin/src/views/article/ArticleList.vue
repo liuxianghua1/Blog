@@ -129,7 +129,6 @@ export default {
     async fetch(page = 1, size = 10) {
       // 数据获取
       const res = await this.$http.get(`/api/articles/?page=${page}&size=${size}`)
-      // console.log(res) res.data.result
       // 分页总数赋予
       this.paginations.total = res.data.count
       if (res.status === 200) {

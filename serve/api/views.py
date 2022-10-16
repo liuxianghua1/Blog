@@ -1,4 +1,4 @@
-from rest_framework import mixins,viewsets
+from rest_framework import mixins,viewsets,generics
 from .models import Users,Article,Category
 from .serializers import UsersSerializer,MyTokenObtainPairSerializer,ArticleSerializer,CategorysSerializer
 
@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from rest_framework.pagination import PageNumberPagination
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password,check_password
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from rest_framework.permissions import BasePermission
@@ -69,10 +69,8 @@ class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixin
     request.data['author_id'] = request.user[0].id
     request.data['image_url'] = request.data['image_name']
     request.data['categorys'] = request.data['categorysList']
-    print(request.data['categorys'])
     ser = ArticleSerializer(data=request.data)
     if not ser.is_valid():
-        print(ser.errors)
         return Response({"code": 400, "data": ser.errors})
     ser.save()
     return  Response({'msg':"文章发布成功",'code':200})
@@ -88,7 +86,6 @@ class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixin
         return Response({'msg':'状态修改成功','code':201})
       else:
         image_url = request.data.get('image_url').split("/")[-1]
-        print(image_url)
         title = request.data.get('title')
         body = request.data.get('body')
         categorys = request.data.get('categorysList')
@@ -166,18 +163,35 @@ class UsersModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.D
   # 更新用户也是 密码需要进行加密 用户名和手机号不允许传参过来 只修改密码和权限、状态
   @action(methods=["put"],detail=True)
   def updateuser(self, request,pk):
+  
       status = request.data.get('status')
       password = make_password(request.data.get('password'))
       role = request.data.get('role')
       user = Users.objects.filter(id=pk)
+     
       # 这是用户列表中滑块修改状态的方法判断
       if len(request.data) == 1 and status in [0,1]:
         user.update(status=status)
         return Response({'msg':'状态修改成功','code':201})
+      
       user.update(status=status, password=password, role=role)
       return Response({'msg':'修改成功','code':201})
       
     
+
+class UpdatePassView(generics.GenericAPIView):
+  def put(self, request, *args, **kwargs):
+    pk = request.user[0].id
+    user = Users.objects.filter(id= pk)
+    oldPassword = request.data.get('oldPassword')
+    password = request.data.get('password')
+    check = check_password(oldPassword,user.first().password)
+    if check:
+      user.update(password=make_password(password))
+      return Response({'msg':'修改成功','code':200})
+    else:
+      return Response({'msg':'原密码不正确','code':500})
+  
 
 
 

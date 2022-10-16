@@ -117,7 +117,6 @@ export default {
     // 更新方法
     async update() {
       const res = await this.$http.put(`/api/users/${this.id}/updateuser/`, this.ruleForm)
-      console.log(res)
       if (res.data.code === 201) {
         // 更新成功
         this.$message({

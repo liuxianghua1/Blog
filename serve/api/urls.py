@@ -8,8 +8,10 @@ router.register('articles',views.ArticlesModelViewSet,basename="articles")
 router.register('categorys',views.CategorysModelViewSet,basename="category")
 
 
+
 urlpatterns = [
-    path('login/', views.FormulaTokenObtainPairView.as_view(), name='login')
+    path('login/', views.FormulaTokenObtainPairView.as_view(), name='login'),
+    path('update_pass/', views.UpdatePassView.as_view(), name='update_pass')
 ]
 
 

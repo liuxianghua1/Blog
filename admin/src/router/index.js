@@ -73,7 +73,6 @@ VueRouter.prototype.push = function push(location, onResolve, onReject) {
 
 // 路由限制 if 判断 不是isPublic：true 也没有token 则跳转
 router.beforeEach((to, from, next) => {
-  // console.log(to.meta.role.indexOf(0))
   window.addEventListener('storage', function (e) {
     localStorage.setItem(e.newValue, e.oldValue)
   })

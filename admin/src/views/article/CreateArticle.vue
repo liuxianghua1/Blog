@@ -198,7 +198,6 @@ export default {
       if (this.id) {
         var res = await this.$http.put(`/api/articles/${this.id}/update_article/`, this.model)
       } else {
-        console.log(this.model)
         res = await this.$http.post('/api/articles/create_article/', this.model)
       }
       if (res.data.code === 200) {
@@ -233,7 +232,6 @@ export default {
 
     // 获取文章数据的方法
     fetchArticle() {
-      // console.log('12')
       this.$http
         .get(`api/articles/${this.id}/`)
         .then(res => {
