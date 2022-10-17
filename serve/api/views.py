@@ -15,11 +15,26 @@ import random
 # 图片上传
 from rest_framework.parsers import MultiPartParser,JSONParser,FormParser
 
+
+
 # 分页类
 class MyPageNumberPagination(PageNumberPagination):
   page_size_query_param = "size"
   page_size = 10
   max_page_size = 50
+  
+# 前端展示文章数据
+class WebArticleListModelMixin(mixins.ListModelMixin,mixins.RetrieveModelMixin,viewsets.GenericViewSet):
+    # 表示不需要认证就可以访问
+    authentication_classes = []
+    queryset = Article.objects.all().order_by("id")
+    customPage = MyPageNumberPagination
+    customPage.page_size=5
+    pagination_class = customPage
+    serializer_class = ArticleSerializer
+    Response({'msg':'测四','code':500})
+
+
 
 # 提供分类
 class CategorysModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.DestroyModelMixin,viewsets.GenericViewSet):

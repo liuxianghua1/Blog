@@ -140,6 +140,8 @@ export default {
       return (this.paginations.page_index - 1) * this.paginations.page_size + index + 1
     },
     async fetch(page = 1, size = 10) {
+      //         .get(`api/list?offset=${(curPage - 1) * limit}&limit=${limit}`)
+
       // 数据获取
       const res = await this.$http.get(`/api/users/?page=${page}&size=${size}`)
       // 分页总数赋予

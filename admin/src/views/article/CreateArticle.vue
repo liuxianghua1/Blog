@@ -113,6 +113,7 @@ export default {
               if (!file.type.match(/^image\/(gif|jpe?g|a?png|bmp)/i)) {
                 return this.$message.error('格式错误')
               }
+              // console.log('111123')
               this.uploadToServer(file)
             })
           }
