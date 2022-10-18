@@ -7,9 +7,8 @@
       <el-table-column prop="title" label="标题"></el-table-column>
       <el-table-column prop="image_url" label="封面">
         <template slot-scope="scope">
-          <el-image v-if="scope.row.image_url" :src="'/uploads/' + scope.row.image_url" :preview-src-list="['/uploads/' + scope.row.image_url]"> </el-image>
+          <el-image v-if="scope.row.image_url" :src="scope.row.image_url" :preview-src-list="[scope.row.image_url]"> </el-image>
           <span v-else>未传封面</span>
-          <!-- <el-empty v-else :image-size="50" description="未上传图片"></el-empty> -->
         </template>
       </el-table-column>
       <el-table-column prop="categorys" label="分类">
@@ -139,7 +138,6 @@ export default {
       // 页码变化触发操作
       this.fetch(page, this.paginations.page_size)
       this.paginations.page_num = page
-      // /api/users/?page=2&size=10
     },
     async handleSizeChange(size) {
       // 每页x条变化触发操作

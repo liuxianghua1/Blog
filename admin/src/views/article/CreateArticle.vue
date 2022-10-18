@@ -8,7 +8,7 @@
       </el-form-item>
 
       <el-form-item label="封面">
-        <el-upload action="http://127.0.0.1:8000/api/articles/image_upload/" class="avatar-uploader" :on-success="afterUpload" :before-upload="beforeUpload" :headers="getAuthHeaders()" ref="upload" accept="image/jpeg,image/png,image/jpg" :show-file-list="false">
+        <el-upload action="http://upload-cn-east-2.qiniup.com" class="avatar-uploader" :auto-upload="true" :on-success="afterUpload" :before-upload="beforeUpload" :data="upload_data" ref="upload" accept="image/jpeg,image/png,image/jpg" :show-file-list="false">
           <img v-if="model.image_url" :src="model.image_url" class="avatar" />
           <i v-else style="line-height: 178px" class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
@@ -20,7 +20,7 @@
         <el-button @click="changeEditorTheme()" type="text">切换编辑器风格,当前配置为:{{ editorOption.theme }}。</el-button>
 
         <quill-editor :key="editorOption.theme" ref="myQuillEditor" v-model="model.body" :options="editorOption" />
-        <el-upload v-show="false" drag multiple :headers="getAuthHeaders()" class="quill-upload" :on-success="quillSuccess" action="http://127.0.0.1:8000/api/articles/image_upload/">
+        <el-upload v-show="false" :before-upload="beforeUpload" drag multiple :data="upload_data" class="quill-upload" :on-success="quillSuccess" :on-error="quillError" action="http://upload-cn-east-2.qiniup.com">
           <i class="el-icon-upload"></i>
         </el-upload>
       </el-form-item>
@@ -74,6 +74,9 @@ export default {
         }
       },
       category: [],
+      upload_data: {
+        token: ''
+      },
       model: {
         body: '',
         title: '',
@@ -81,12 +84,21 @@ export default {
         categorys: [],
         status: 1
       },
-      image_name: ''
-      // 用来存放图片文件名
-      // http://127.0.0.1:8080/uploads/2022101506452378707.jpg 可以获取到
+      imgBaseUrl: 'http://rjrujxhu3.bkt.clouddn.com/'
     }
   },
   methods: {
+    // 获取oss的token
+    getUploadToken() {
+      this.$http
+        .get('/api/articles/get_token/')
+        .then(res => {
+          this.upload_data.token = res.data.uptoken
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     // 删除封面的方法
     deleteImage() {
       this.model.image_url = ''
@@ -113,7 +125,6 @@ export default {
               if (!file.type.match(/^image\/(gif|jpe?g|a?png|bmp)/i)) {
                 return this.$message.error('格式错误')
               }
-              // console.log('111123')
               this.uploadToServer(file)
             })
           }
@@ -126,47 +137,57 @@ export default {
     uploadToServer(file) {
       const fm = new FormData()
       fm.append('file', file)
+      fm.append('token', this.upload_data.token)
       this.$http
-        .post('/api/articles/image_upload/', fm)
+        .post('http://upload-cn-east-2.qiniup.com', fm)
         .then(res => {
-          if (res.data.code === 200) {
-            const quill = this.$refs.myQuillEditor.quill
-            const pos = quill.getSelection().index
-            // 插入图片到光标位置
-            quill.insertEmbed(pos, 'image', '/uploads/' + res.data.filename)
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.data.msg
-            })
-          }
+          const quill = this.$refs.myQuillEditor.quill
+          // 获取光标位置
+          const pos = quill.getSelection().index
+          // 插入图片到光标位置
+          quill.insertEmbed(pos, 'image', this.imgBaseUrl + res.data.key)
         })
         .catch(err => {
           this.$message({
             type: 'error',
-            message: err
+            message: err.data
           })
         })
     },
 
+    // if (res.data.code === 200) {
+    //   const quill = this.$refs.myQuillEditor.quill
+    //   const pos = quill.getSelection().index
+    //   // 插入图片到光标位置
+    //   quill.insertEmbed(pos, 'image', '/uploads/' + res.data.filename)
+    // } else {
+    //   this.$message({
+    //     type: 'error',
+    //     message: res.data.msg
+    //   })
+    // }
+
+    // 富文本上传图片失败的方法
+    quillError() {
+      this.$message({
+        message: '上传图片类型不正确!',
+        type: 'error'
+      })
+    },
+
     // 富文本编辑器上传图片的方法(不是粘贴图片)
     quillSuccess(res) {
-      if (res) {
-        // 获取文本编辑器
-        const quill = this.$refs.myQuillEditor.quill
-        // 获取光标位置
-        const pos = quill.getSelection().index
-        // 插入图片到光标位置
-        quill.insertEmbed(pos, 'image', '/uploads/' + res.filename)
-      } else {
-        this.$essage.error('图片插入失败')
-      }
+      // 获取文本编辑器
+      const quill = this.$refs.myQuillEditor.quill
+      // 获取光标位置
+      const pos = quill.getSelection().index
+      // 插入图片到光标位置
+      quill.insertEmbed(pos, 'image', this.imgBaseUrl + res.key)
     },
 
     // 成功上传封面执行的方法 封面传给后端后 后端返回给我文件名 然后我在复制给表单 路径+文件名 在一起传送给数据库
     afterUpload(res) {
-      this.image_name = res.filename
-      this.$set(this.model, 'image_url', '/uploads/' + res.filename)
+      this.$set(this.model, 'image_url', this.imgBaseUrl + res.key)
     },
 
     // 上传封面钱对类型做个限制
@@ -195,10 +216,11 @@ export default {
         }
       }
       this.model.categorysList = list
-      this.model.image_name = this.image_name
       if (this.id) {
+        console.log(this.model)
         var res = await this.$http.put(`/api/articles/${this.id}/update_article/`, this.model)
       } else {
+        console.log(this.model)
         res = await this.$http.post('/api/articles/create_article/', this.model)
       }
       if (res.data.code === 200) {
@@ -241,9 +263,7 @@ export default {
           res.data.categorys.forEach(elem => {
             list.push(elem.id)
           })
-          if (this.model.image_url !== '') {
-            this.model.image_url = '/uploads/' + res.data.image_url
-          }
+
           this.model.categorys = list
         })
         .catch(err => {
@@ -257,6 +277,7 @@ export default {
 
   mounted() {
     this.init()
+    this.getUploadToken()
   },
   created() {
     this.fetchCategorys()
@@ -266,10 +287,6 @@ export default {
 </script>
 
 <style>
-/* body {
-  border-bottom: 0px solid #dfe6ec !important;
-  /*margin-bottom: 10px;*/
-
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

@@ -2,7 +2,7 @@
   <v-row>
     <v-col v-for="i in articleLit" :key="i.id" cols="12">
       <v-card outlined class="mx-auto">
-        <v-img @click="$router.push(`/article/${i.id}`)" class="white--text align-end" style="cursor: pointer" height="auto" :src="i.image_url === '' ? 'http://localhost:8081/uploads/2022101710040245215.png' : 'http://localhost:8081/uploads/' + i.image_url"> </v-img>
+        <v-img @click="$router.push(`/article/${i.id}`)" class="white--text align-end" style="cursor: pointer" height="auto" :src="i.image_url === '' ? '' : i.image_url"> </v-img>
         <v-card-title>
           <span class="text-h5" style="cursor: pointer" @click="$router.push(`/article/${i.id}`)">{{ i.title }}</span>
         </v-card-title>

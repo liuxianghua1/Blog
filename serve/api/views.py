@@ -14,6 +14,7 @@ from django.utils import timezone as datetime
 import random
 # 图片上传
 from rest_framework.parsers import MultiPartParser,JSONParser,FormParser
+from qiniu import Auth
 
 
 
@@ -71,6 +72,9 @@ class CategorysModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixi
         return Response({'msg':'更新成功','code':200})
 
 
+# 定义获取七牛服务器上的tocken 
+
+
 # 文章类
 class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixins.DestroyModelMixin,viewsets.GenericViewSet):
   queryset = Article.objects.all().order_by("-id","createtime","title")
@@ -82,7 +86,6 @@ class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixin
   @action(methods=["post"],detail=False)
   def create_article(self,request):
     request.data['author_id'] = request.user[0].id
-    request.data['image_url'] = request.data['image_name']
     request.data['categorys'] = request.data['categorysList']
     ser = ArticleSerializer(data=request.data)
     if not ser.is_valid():
@@ -100,7 +103,7 @@ class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixin
         article.update(status=status)
         return Response({'msg':'状态修改成功','code':201})
       else:
-        image_url = request.data.get('image_url').split("/")[-1]
+        image_url = request.data.get('image_url')
         title = request.data.get('title')
         body = request.data.get('body')
         categorys = request.data.get('categorysList')
@@ -113,20 +116,40 @@ class ArticlesModelViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin,mixin
         ser.save()
         return Response({'msg':'修改成功','code':200})
 
-  # 图片上传方法
-  @action(methods=["post"],detail=False)
-  def image_upload(self,request):
-    img = request.data.get("file")
-    img_type = img.name.split('.')[-1]
-    if img_type not in['png', 'jpg', 'jpeg']:
-      return  Response({'msg':"上传图片类型不正确",'code':500})
-    newfielname = datetime.now().strftime('%Y%m%d%H%M%S') + str(random.randint(10000,99999)) + '.' + img_type  #采用时间和随机数重命名图片
-    path = "../admin/public/uploads/" +newfielname
-    with open(path,'wb') as f:  #二进制写入
-                for i in img.chunks():
-                    f.write(i)
-    return  Response({'msg':"成功",'code':200,"filename":newfielname})
 
+# {"uptoken":"wVhf1CDNbcVcOGQh-nMDVPqOiu-tlyRTW4g1ch89:ZSHskhPhTGBX7dOuD_vvn01_rHg=:eyJzY29wZSI6ImxpdWRlYmxvZyIsImRlYWRsaW5lIjoxNjY2MDE5MjM3fQ==","code":200}
+  @action(methods=["get"],detail=False)
+  def get_token(self,request):
+  # 1. 先要设置AccessKey和SecretKey
+      access_key = "wVhf1CDNbcVcOGQh-nMDVPqOiu-tlyRTW4g1ch89"
+      secret_key = "zP3Kqeb5ky_xTLCZoLI1zEXJu--EoHBN1Ru0YzGD"
+      # 2. 授权
+      q = Auth(access_key, secret_key)
+      # 3. 设置七牛空间(自己刚刚创建的)
+      bucket_name = 'liudeblog'
+      policy={
+        "mimeLimit":"image/*"
+      }
+      # 4. 生成token
+      token = q.upload_token(bucket_name,policy=policy)
+      # 5. 返回token,key必须为uptoken
+      return Response({'uptoken': token,'code':200})
+
+  # 图片上传方法 弃用了 全部改成oss上传
+# http://rjrujxhu3.bkt.clouddn.com
+# http://rjrujxhu3.bkt.clouddn.com/uploads/Snipaste_2022-10-17_16-56-35.png
+  # @action(methods=["post"],detail=False)
+  # def image_upload(self,request):
+  #   img = request.data.get("file")
+  #   img_type = img.name.split('.')[-1]
+  #   if img_type not in['png', 'jpg', 'jpeg']:
+  #     return  Response({'msg':"上传图片类型不正确",'code':500})
+  #   newfielname = datetime.now().strftime('%Y%m%d%H%M%S') + str(random.randint(10000,99999)) + '.' + img_type  #采用时间和随机数重命名图片
+  #   path = "../admin/public/uploads/" +newfielname
+  #   with open(path,'wb') as f:  #二进制写入
+  #               for i in img.chunks():
+  #                   f.write(i)
+  #   return  Response({'msg':"成功",'code':200,"filename":newfielname})
 
 
  
