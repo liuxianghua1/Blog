@@ -229,7 +229,7 @@ export default {
           type: 'success',
           message: res.data.msg
         })
-        this.$router.push('/home/article_list/')
+        this.$router.push('/admin/article_list')
       } else if (res.data.code === 500) {
         this.$message({
           type: 'error',

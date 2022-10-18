@@ -106,7 +106,7 @@ export default {
           type: 'success',
           message: '创建成功'
         })
-        this.$router.push('/home/user_list/')
+        this.$router.push('/admin/user_list')
       } else if (res.data.code === 500) {
         this.$message({
           type: 'error',
@@ -123,7 +123,7 @@ export default {
           type: 'success',
           message: '更新成功'
         })
-        this.$router.push('/home/user_list/')
+        this.$router.push('/admin/user_list')
       }
     },
     // 提交方法

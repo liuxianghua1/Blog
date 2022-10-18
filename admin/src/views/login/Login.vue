@@ -59,7 +59,7 @@ export default {
         localStorage.role = res.data.role
         localStorage.EditorTheme = 'bubble'
 
-        this.$router.push('/')
+        this.$router.push('/admin')
 
         this.$message({
           type: 'success',

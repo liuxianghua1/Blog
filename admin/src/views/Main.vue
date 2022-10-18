@@ -29,23 +29,23 @@
     <el-container>
       <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
         <el-menu router unique-opened :default-active="$route.path">
-          <el-menu-item index="/home"><i class="el-icon-house"></i>主页</el-menu-item>
+          <el-menu-item index="/admin"><i class="el-icon-house"></i>主页</el-menu-item>
           <el-submenu v-show="role == 1" index="1">
             <template slot="title"><i class="el-icon-user"></i>用户管理</template>
             <el-menu-item-group>
-              <el-menu-item index="/home/user_create">新建用户</el-menu-item>
-              <el-menu-item index="/home/user_list">用户列表</el-menu-item>
+              <el-menu-item index="/admin/user_create">新建用户</el-menu-item>
+              <el-menu-item index="/admin/user_list">用户列表</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">
             <template slot="title"><i class="el-icon-edit-outline"></i>文章管理</template>
             <el-menu-item-group>
-              <el-menu-item index="/home/article_create">发布文章</el-menu-item>
-              <el-menu-item index="/home/article_list">文章列表</el-menu-item>
+              <el-menu-item index="/admin/article_create">发布文章</el-menu-item>
+              <el-menu-item index="/admin/article_list">文章列表</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
-          <el-menu-item index="/home/category_list"><i class="el-icon-guide"></i>分类列表</el-menu-item>
+          <el-menu-item index="/admin/category_list"><i class="el-icon-guide"></i>分类列表</el-menu-item>
         </el-menu>
       </el-aside>
       <el-main>
@@ -87,8 +87,8 @@ export default {
   methods: {
     exit() {
       localStorage.clear()
-      this.$message.success('退出成功')
       this.$router.push('/login')
+      this.$message.success('退出成功')
     },
     closeDialog() {
       this.form = {

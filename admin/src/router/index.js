@@ -17,9 +17,9 @@ Vue.use(VueRouter)
 // 超级用户的
 const routes = [
   { path: '/login', name: 'login', component: Login, meta: { isPublic: true } },
-  { path: '/', redirect: '/home' },
+  // { path: '/admin/', redirect: '/admin' },
   {
-    path: '/home',
+    path: '/admin',
     name: 'Main',
     component: Main,
 
@@ -79,7 +79,7 @@ router.beforeEach((to, from, next) => {
   if (!to.meta.isPublic && !localStorage.token) {
     return next('/login')
   } else if (to.meta.role === 1 && Number(localStorage.role) === 0) {
-    return next('/home')
+    return next('/admin')
   }
 
   next()

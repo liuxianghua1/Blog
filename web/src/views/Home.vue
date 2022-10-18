@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col v-for="i in articleLit" :key="i.id" cols="12">
+    <v-col v-for="i in articleList" :key="i.id" cols="12">
       <v-card outlined class="mx-auto">
         <v-img @click="$router.push(`/article/${i.id}`)" class="white--text align-end" style="cursor: pointer" height="auto" :src="i.image_url === '' ? '' : i.image_url"> </v-img>
         <v-card-title>
@@ -24,6 +24,7 @@
         </v-card-actions>
       </v-card>
     </v-col>
+
     <v-col cols="12">
       <div class="text-center">
         <span class="text-subtitle-2">共{{ pageCount }}篇文章</span>
@@ -36,7 +37,7 @@
 <script>
 export default {
   data: () => ({
-    articleLit: [],
+    articleList: [],
     page: 1, // 当前页码
     pageCount: 0,
     pageLimit: 5, // 每页展示数量
@@ -58,7 +59,7 @@ export default {
       this.$http
         .get(`/api/article_list/?page=${page}&size=${pageLimit}/`)
         .then(res => {
-          this.articleLit = res.data.results
+          this.articleList = res.data.results
           this.pageCount = res.data.count
           this.pageLength = Math.ceil(this.pageCount / this.pageLimit)
         })

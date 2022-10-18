@@ -56,7 +56,7 @@
           <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
         </template>
         <template slot-scope="scope">
-          <el-button size="medium" type="primary" round @click="$router.push(`/home/user_updata/${scope.row.id}`)">编辑</el-button>
+          <el-button size="medium" type="primary" round @click="$router.push(`/admin/user_updata/${scope.row.id}`)">编辑</el-button>
           <el-button size="medium" type="danger" round @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
