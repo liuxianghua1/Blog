@@ -29,11 +29,53 @@ class WebArticleListModelMixin(mixins.ListModelMixin,mixins.RetrieveModelMixin,v
     # 表示不需要认证就可以访问
     authentication_classes = []
     queryset = Article.objects.filter(status=1).order_by("-id","createtime")
+
+    
+
+
+# 重写retrieve方法
+    def retrieve(self, request, *args, **kwargs):
+      # 下一页方法
+        def next_article(self):
+            return Article.objects.filter(id__gt=self.id,status=1).order_by('id').first()
+        # 上一页方法
+        def pre_article(self):
+            return Article.objects.filter(id__lt=self.id,status=1).order_by('id').last()
+
+        
+        nextPage = next_article(self.get_object())
+        prePage = pre_article(self.get_object())
+
+        if nextPage == None:
+          next = {}
+        else:
+          next={  
+              'id':nextPage.id,
+              'title':nextPage.title
+        }
+        
+        if prePage != None:
+           pre={
+            'id':prePage.id,
+            'title':prePage.title
+           }
+        else:
+          pre = {}
+
+        instance = self.get_object()
+        instance.clicks +=1
+        
+        instance.save()
+        serializer = self.get_serializer(instance)
+        # "next":next,"pre":pre,
+        return Response({"next":next,"pre":pre,'serializer':serializer.data})
+
     customPage = MyPageNumberPagination
     customPage.page_size=5
     pagination_class = customPage
+
+
     serializer_class = ArticleSerializer
-    Response({'msg':'测四','code':500})
 
 
 

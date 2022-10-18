@@ -33,7 +33,6 @@
   </div>
 </template>
 <script>
-// 待实现功能 新建用户、修改用户
 export default {
   props: {
     id: {}

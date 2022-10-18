@@ -6,14 +6,14 @@
         <v-card-title>
           <span class="text-h5" style="cursor: pointer" @click="$router.push(`/article/${i.id}`)">{{ i.title }}</span>
         </v-card-title>
-        <v-card-subtitle class="pb-0 text--primary text-subtitle-1">作者：{{ i.author }}</v-card-subtitle>
+        <v-card-subtitle @click="readAuthorArticle(i.author)" class="pb-0 text--primary text-subtitle-1">作者：{{ i.author }}</v-card-subtitle>
 
         <v-card-text class="text--primary text-subtitle-1">
           <div>作者身份：{{ i.author_role === 0 ? '管理员' : '超级管理员' }}</div>
           <div>发表时间：{{ i.createtime }}</div>
           <div>
             分类：
-            <v-chip v-for="k in i.categorys" :key="k.id" class="ma-1" color="blue" @click="readCategoryArticle(k.id)" label text-color="white">
+            <v-chip v-for="k in i.categorys" :key="k.id" class="ma-1" color="blue" @click="$router.push(`/category/${k.id}`)" label text-color="white">
               <v-icon left>mdi-code-tags </v-icon>
               {{ k.name }}
             </v-chip>
@@ -48,11 +48,11 @@ export default {
     onPageChange() {
       this.fetch(this.page, this.pageLimit)
     },
-    readArticle(id) {
-      console.log('文章的' + id)
-    },
     readCategoryArticle(id) {
       console.log('分类的id' + id)
+    },
+    readAuthorArticle(name) {
+      console.log('作者的name' + name)
     },
     fetch(page = 1, pageLimit = 5) {
       // page === 1 ? page : page - 1
