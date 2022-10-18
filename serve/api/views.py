@@ -28,7 +28,7 @@ class MyPageNumberPagination(PageNumberPagination):
 class WebArticleListModelMixin(mixins.ListModelMixin,mixins.RetrieveModelMixin,viewsets.GenericViewSet):
     # 表示不需要认证就可以访问
     authentication_classes = []
-    queryset = Article.objects.all().order_by("id")
+    queryset = Article.objects.filter(status=1).order_by("-id","createtime")
     customPage = MyPageNumberPagination
     customPage.page_size=5
     pagination_class = customPage

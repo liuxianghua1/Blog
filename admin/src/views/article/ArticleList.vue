@@ -1,6 +1,5 @@
 <template>
   <div>
-    <el-button @click="clearFilter" style="margin-bottom: 20px">清除所有过滤条件</el-button>
     <el-table ref="filterTable" border :row-class-name="tableRowClassName" :data="tableData.filter(data => !search || data.title.toLowerCase().includes(search.toLowerCase()))" style="width: 100%">
       <el-table-column type="index" :index="table_index" width="50" label="序号"> </el-table-column>
       <el-table-column prop="id" label="id" width="50"></el-table-column>
@@ -75,9 +74,6 @@ export default {
     }
   },
   methods: {
-    clearFilter() {
-      this.$refs.filterTable.clearFilter()
-    },
     tableRowClassName({ row }) {
       if (row.status === 0) {
         return 'danger-row'
