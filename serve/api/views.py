@@ -8,10 +8,7 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth.hashers import make_password,check_password
 from rest_framework_simplejwt.views import TokenObtainPairView
-
 from rest_framework.permissions import BasePermission
-from django.utils import timezone as datetime
-import random
 # 图片上传
 from rest_framework.parsers import MultiPartParser,JSONParser,FormParser
 from qiniu import Auth
@@ -24,6 +21,24 @@ class MyPageNumberPagination(PageNumberPagination):
   page_size = 10
   max_page_size = 50
   
+
+class WebCategoryListModelmixin(mixins.ListModelMixin,mixins.RetrieveModelMixin,viewsets.GenericViewSet):
+    authentication_classes = []
+    queryset = Category.objects.filter().order_by("id")
+    serializer_class = CategorysSerializer
+
+# 重写retrieve方法
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response({'serializer':serializer.data,"articleList":(self.get_object().article_set.all().values("title","id","clicks","createtime").order_by("-id"))})
+
+
+      
+
+
+
 # 前端展示文章数据
 class WebArticleListModelMixin(mixins.ListModelMixin,mixins.RetrieveModelMixin,viewsets.GenericViewSet):
     # 表示不需要认证就可以访问

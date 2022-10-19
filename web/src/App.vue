@@ -27,17 +27,9 @@
     <!-- <v-navigation-drawer clipped-right>右边</v-navigation-drawer> -->
 
     <v-main>
-      <v-container fluid class="justify-center">
-        <v-row>
-          <v-col>
-            <router-view :key="$route.path"></router-view>
-          </v-col>
-          <v-col cols="2" class="d-none d-lg-flex d-xl-flex">
-            <code>
-              谁也不感谢了，就感谢我自己，写代码好累，我好牛蛙谁也不感谢了，就感谢我自己，写代码好累，我好牛蛙谁也不感谢了，就感谢我自己，写代码好累，我好牛蛙谁也不感谢了，就感谢我自己，写代码好累，我好牛蛙谁也不感谢了，就感谢我自己，写代码好累，我好牛蛙谁也不感谢了，就感谢我自己，写代码好累，我好牛蛙
-            </code>
-          </v-col>
-        </v-row>
+      <!-- fluid -->
+      <v-container class="justify-center">
+        <router-view :key="$route.path"></router-view>
       </v-container>
     </v-main>
 

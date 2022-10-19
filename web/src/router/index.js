@@ -2,7 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Article from '../views/Article.vue'
-import category from '../views/category.vue'
+import Category from '../views/category.vue'
+import ArticleByCategory from '../views/ArticleByCategory.vue'
 
 Vue.use(VueRouter)
 
@@ -25,14 +26,21 @@ const routes = [
   {
     path: '/category',
     name: 'category',
-    component: category
-  },
-  {
-    path: '/category/:id',
-    name: 'category',
-    component: category,
-    props: true
+    component: Category,
+    children: [
+      {
+        path: 'articlebycategory/:id',
+        component: ArticleByCategory,
+        props: true
+      }
+    ]
   }
+  // {
+  //   path: '/category/:id',
+  //   name: 'category',
+  //   component: category,
+  //   props: true
+  // }
   // {
   //   path: '/about',
   //   name: 'About',

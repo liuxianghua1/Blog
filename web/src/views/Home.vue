@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col v-for="i in articleList" :key="i.id" cols="12">
-      <v-card max-width="1350" outlined>
+      <v-card outlined>
         <v-img @click="$router.push(`/article/${i.id}`)" class="white--text align-end" style="cursor: pointer" height="auto" :src="i.image_url === '' ? '' : i.image_url"> </v-img>
         <v-card-title>
           <span class="text-h5" style="cursor: pointer" @click="$router.push(`/article/${i.id}`)">{{ i.title }}</span>
@@ -13,7 +13,7 @@
           <div>发表时间：{{ i.createtime }}</div>
           <div>
             分类：
-            <v-chip v-for="k in i.categorys" :key="k.id" class="ma-1" color="blue" @click="$router.push(`/category/${k.id}`)" label text-color="white">
+            <v-chip v-for="k in i.categorys" :key="k.id" class="ma-1" color="blue" @click="$router.push(`/category/articlebycategory/${k.id}`)" label text-color="white">
               <v-icon left>mdi-code-tags </v-icon>
               {{ k.name }}
             </v-chip>
@@ -61,6 +61,7 @@ export default {
         .then(res => {
           this.articleList = res.data.results
           this.pageCount = res.data.count
+          console.log(res.data.results)
           this.pageLength = Math.ceil(this.pageCount / this.pageLimit)
         })
         .catch(err => {

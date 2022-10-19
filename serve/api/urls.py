@@ -15,6 +15,8 @@ urlpatterns = [
     path('update_pass/', views.UpdatePassView.as_view(), name='update_pass'),
     path('article_list/', views.WebArticleListModelMixin.as_view({"get": "list"}), name='article_list'),
     path('article_list/<int:pk>/', views.WebArticleListModelMixin.as_view({"get": "retrieve"})),
+    path('category_list/<int:pk>/', views.WebCategoryListModelmixin.as_view({"get": "retrieve"})),
+    path('category_list/', views.WebCategoryListModelmixin.as_view({"get": "list"})),
 ]
 
 
