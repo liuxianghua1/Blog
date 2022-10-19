@@ -40,6 +40,16 @@ class ArticleSerializer(WritableNestedModelSerializer,serializers.ModelSerialize
         model = Article
         ordering = ['createtime']
         fields = "__all__"
+
+
+# 文章序列化器
+class Archivingerializer(serializers.ModelSerializer):
+    createtime = serializers.DateTimeField(format='%Y-%m-%d', read_only=True)
+    class Meta:
+        model = Article
+        ordering = ['createtime']
+        fields = ['id','title','createtime']
+ 
  
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     # 自定义登录认证，使用自有用户表

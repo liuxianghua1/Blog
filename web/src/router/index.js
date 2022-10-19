@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Article from '../views/Article.vue'
 import Category from '../views/category.vue'
 import ArticleByCategory from '../views/ArticleByCategory.vue'
+import Archiving from '../views/Archiving.vue'
 
 Vue.use(VueRouter)
 
@@ -25,6 +26,14 @@ const routes = [
     name: 'Article',
     component: Article,
     props: true
+  },
+  {
+    path: '/archiving',
+    name: 'Archiving',
+    component: Archiving,
+    meta: {
+      title: '归档'
+    }
   },
   {
     path: '/category',

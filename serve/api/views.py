@@ -1,6 +1,6 @@
 from rest_framework import mixins,viewsets,views
 from .models import Users,Article,Category
-from .serializers import UsersSerializer,MyTokenObtainPairSerializer,ArticleSerializer,CategorysSerializer
+from .serializers import UsersSerializer,MyTokenObtainPairSerializer,ArticleSerializer,CategorysSerializer,Archivingerializer
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -22,6 +22,7 @@ class MyPageNumberPagination(PageNumberPagination):
   max_page_size = 50
   
 
+# web端分类
 class WebCategoryListModelmixin(mixins.ListModelMixin,mixins.RetrieveModelMixin,viewsets.GenericViewSet):
     authentication_classes = []
     queryset = Category.objects.filter().order_by("id")
@@ -44,9 +45,7 @@ class WebArticleListModelMixin(mixins.ListModelMixin,mixins.RetrieveModelMixin,v
     # 表示不需要认证就可以访问
     authentication_classes = []
     queryset = Article.objects.filter(status=1).order_by("-id","createtime")
-
-    
-
+    serializer_class = ArticleSerializer
 
 # 重写retrieve方法
     def retrieve(self, request, *args, **kwargs):
@@ -90,7 +89,18 @@ class WebArticleListModelMixin(mixins.ListModelMixin,mixins.RetrieveModelMixin,v
     pagination_class = customPage
 
 
-    serializer_class = ArticleSerializer
+
+    
+
+# 前端展示归档数据
+class WebarchivingListModelMixin(mixins.ListModelMixin,viewsets.GenericViewSet):
+    # 表示不需要认证就可以访问
+    authentication_classes = []
+    queryset = Article.objects.filter(status=1).order_by("-id","createtime")
+    serializer_class = Archivingerializer
+
+
+
 
 
 

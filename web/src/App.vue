@@ -54,12 +54,12 @@ export default {
           url: '/category'
         },
         {
-          name: '关于',
-          url: '/about'
-        },
-        {
           name: '归档',
           url: '/archiving'
+        },
+        {
+          name: '关于',
+          url: '/about'
         }
       ]
     }
