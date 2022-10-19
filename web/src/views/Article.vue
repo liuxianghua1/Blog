@@ -23,9 +23,7 @@
         <div class="ql-container ql-snow mx-auto HTMLCSS" v-if="articleData.body">
           <div class="ql-editor" v-html="articleData.body"></div>
         </div>
-        <div v-else style="text-align: center" class="text-h1">
-          <v-img src="http://rjrujxhu3.bkt.clouddn.com/Snipaste_2022-10-18_09-37-12.png"></v-img>
-        </div>
+        <div v-else style="text-align: center" class="text-h3">啥也没发、空空如也</div>
       </v-card-text>
     </v-card>
     <div style="text-align: center">

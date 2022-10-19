@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col v-for="i in articleList" :key="i.id" cols="12">
-      <v-card outlined class="mx-auto">
+      <v-card max-width="1350" outlined>
         <v-img @click="$router.push(`/article/${i.id}`)" class="white--text align-end" style="cursor: pointer" height="auto" :src="i.image_url === '' ? '' : i.image_url"> </v-img>
         <v-card-title>
           <span class="text-h5" style="cursor: pointer" @click="$router.push(`/article/${i.id}`)">{{ i.title }}</span>
