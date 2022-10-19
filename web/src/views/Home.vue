@@ -78,7 +78,9 @@ export default {
   },
   watch: {
     searchVal: function (val) {
+      console.log(val)
       this.title = val
+      this.page = 1
       this.fetch(this.page, this.pageLimit, this.authorid, this.title)
     }
   }

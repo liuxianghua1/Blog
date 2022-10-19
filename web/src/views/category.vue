@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div style="border: thin solid rgba(0, 0, 0, 0.12)">
     <div class="text-h5 text-center">共有{{ this.count }}个分类</div>
-    <div>
-      <v-btn v-for="i in categoryList" :key="i.id" :to="`/category/articlebycategory/${i.id}`" text>
+    <div style="text-align: center">
+      <v-btn rounded v-for="i in categoryList" :key="i.id" :to="`/category/articlebycategory/${i.id}`" text>
         {{ i.name }}
       </v-btn>
     </div>

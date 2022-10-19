@@ -17,7 +17,7 @@
           <v-spacer></v-spacer>
 
           <v-responsive class="mt-1">
-            <v-text-field type="text" v-model="search" validate-on-blur light append-icon="mdi-magnify" dense flat hide-details label="搜索博客" placeholder="输入标题" @blur="searchMethods" @keydown.enter="searchMethods" @click:append="searchMethods" rounded></v-text-field>
+            <v-text-field type="text" v-model="search" validate-on-blur light append-icon="mdi-magnify" dense flat hide-details label="主页中搜索博客" placeholder="输入标题" @blur="searchMethods" @keydown.enter="searchMethods" @click:append="searchMethods" rounded></v-text-field>
           </v-responsive>
         </div>
       </v-container>
