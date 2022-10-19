@@ -32,7 +32,7 @@ class WebCategoryListModelmixin(mixins.ListModelMixin,mixins.RetrieveModelMixin,
         instance = self.get_object()
         instance.save()
         serializer = self.get_serializer(instance)
-        return Response({'serializer':serializer.data,"articleList":(self.get_object().article_set.all().values("title","id","clicks","createtime").order_by("-id"))})
+        return Response({'serializer':serializer.data,"articleList":(self.get_object().article_set.all().values("title","id","clicks","createtime").filter(status=1).order_by("-id"))})
 
 
       

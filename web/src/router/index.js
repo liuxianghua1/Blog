@@ -15,7 +15,10 @@ const routes = [
   {
     path: '/home',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: {
+      title: '主页'
+    }
   },
   {
     path: '/article/:id',
@@ -27,11 +30,17 @@ const routes = [
     path: '/category',
     name: 'category',
     component: Category,
+    meta: {
+      title: '分类'
+    },
     children: [
       {
         path: 'articlebycategory/:id',
         component: ArticleByCategory,
-        props: true
+        props: true,
+        meta: {
+          title: '分类'
+        }
       }
     ]
   }
@@ -50,6 +59,14 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  /* 路由发生变化修改页面title */
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
+  next()
 })
 
 export default router

@@ -12,7 +12,7 @@
           <span class="mr-2">作者身份：{{ articleData.author_role === 0 ? '管理员' : '超级管理员' }} </span>
           <span class="mr-2">发表时间：{{ articleData.createtime }}</span>
           <span> 分类：</span>
-          <v-chip v-for="k in articleData.categorys" :key="k.id" class="mr-2 text-primary text-subtitle-1" color="#f0f0f0" label text-color="black">
+          <v-chip v-for="k in articleData.categorys" :key="k.id" @click="$router.push(`/category/articlebycategory/${k.id}`)" class="mr-2 text-primary text-subtitle-1" color="#f0f0f0" label text-color="black">
             {{ k.name }}
           </v-chip>
           <span> <v-icon class="mb-1">mdi-eye</v-icon> 浏览量：{{ articleData.clicks }}</span>
@@ -67,6 +67,7 @@ export default {
         .get(`api/article_list/${this.id}/?page=5`)
         .then(res => {
           this.articleData = res.data.serializer
+          document.title = res.data.serializer.title
           this.next = res.data.next
           this.pre = res.data.pre
         })
