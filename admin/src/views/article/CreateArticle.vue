@@ -233,10 +233,8 @@ export default {
       }
       this.model.categorysList = list
       if (this.id) {
-        console.log(this.model)
         var res = await this.$http.put(`/api/articles/${this.id}/update_article/`, this.model)
       } else {
-        console.log(this.model)
         res = await this.$http.post('/api/articles/create_article/', this.model)
       }
       if (res.data.code === 200) {

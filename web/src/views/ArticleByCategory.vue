@@ -35,7 +35,6 @@ export default {
   methods: {
     fetch() {
       // 标题 作者名 fabiaoshijian liulanliang yuantuqiuwenanniu
-      // console.log(this.$route.params.id)
       this.$http
         .get(`api/category_list/${this.id}/`)
         .then(res => {

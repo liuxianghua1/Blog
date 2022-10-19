@@ -12,7 +12,8 @@ from rest_framework.permissions import BasePermission
 # 图片上传
 from rest_framework.parsers import MultiPartParser,JSONParser,FormParser
 from qiniu import Auth
-
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 
 # 分页类
@@ -44,6 +45,9 @@ class WebCategoryListModelmixin(mixins.ListModelMixin,mixins.RetrieveModelMixin,
 class WebArticleListModelMixin(mixins.ListModelMixin,mixins.RetrieveModelMixin,viewsets.GenericViewSet):
     # 表示不需要认证就可以访问
     authentication_classes = []
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ['title']
+    filterset_fields = ["title","author"]
     queryset = Article.objects.filter(status=1).order_by("-id","createtime")
     serializer_class = ArticleSerializer
 

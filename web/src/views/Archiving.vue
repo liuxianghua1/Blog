@@ -56,7 +56,6 @@ export default {
         .get('api/archiving/')
         .then(res => {
           this.data = res.data
-          console.log(res.data)
         })
         .catch(err => {
           // this.$router.push('/home')

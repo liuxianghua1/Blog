@@ -17,7 +17,7 @@
           <v-spacer></v-spacer>
 
           <v-responsive class="mt-1">
-            <v-text-field light append-icon="mdi-magnify" dense flat hide-details label="搜索博客" placeholder="输入标题" rounded></v-text-field>
+            <v-text-field type="text" v-model="search" validate-on-blur light append-icon="mdi-magnify" dense flat hide-details label="搜索博客" placeholder="输入标题" @blur="searchMethods" @keydown.enter="searchMethods" @click:append="searchMethods" rounded></v-text-field>
           </v-responsive>
         </div>
       </v-container>
@@ -29,7 +29,7 @@
     <v-main>
       <!-- fluid -->
       <v-container class="justify-center">
-        <router-view :key="$route.path"></router-view>
+        <router-view :key="$route.path" :searchVal="searchVal"></router-view>
       </v-container>
     </v-main>
 
@@ -61,16 +61,15 @@ export default {
           name: '关于',
           url: '/about'
         }
-      ]
+      ],
+      search: '',
+      searchVal: ''
+    }
+  },
+  methods: {
+    searchMethods() {
+      this.searchVal = this.search
     }
   }
-  // methods: {
-  //   demo() {
-  //     console.log('!')
-  //   }
-  // },
-  // created() {
-  //   this.demo()
-  // }
 }
 </script>

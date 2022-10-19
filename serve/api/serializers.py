@@ -32,6 +32,7 @@ class CategorysSerializer(serializers.ModelSerializer):
 class ArticleSerializer(WritableNestedModelSerializer,serializers.ModelSerializer):
     categorys = CategorysSerializer(many=True)
     author = serializers.CharField(source='author.username',read_only=True)
+    authorid = serializers.CharField(source='author.id',read_only=True)
     author_role = serializers.IntegerField(source='author.role',read_only=True)
     # source='author.id'
     author_id = serializers.IntegerField(write_only=True)

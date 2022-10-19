@@ -6,7 +6,7 @@
         <v-card-title>
           <span class="text-h5" style="cursor: pointer" @click="$router.push(`/article/${i.id}`)">{{ i.title }}</span>
         </v-card-title>
-        <v-card-subtitle @click="readAuthorArticle(i.author)" class="pb-0 text--primary text-subtitle-1">作者：{{ i.author }}</v-card-subtitle>
+        <v-card-subtitle style="cursor: pointer" @click="readAuthorArticle(i.authorid)" class="pb-0 text--primary text-subtitle-1">作者：{{ i.author }}</v-card-subtitle>
 
         <v-card-text class="text--primary text-subtitle-1">
           <div>作者身份：{{ i.author_role === 0 ? '管理员' : '超级管理员' }}</div>
@@ -36,32 +36,36 @@
 
 <script>
 export default {
+  props: {
+    searchVal: {}
+  },
   data: () => ({
     articleList: [],
     page: 1, // 当前页码
     pageCount: 0,
     pageLimit: 5, // 每页展示数量
     pageLength: 0, // 总页码数 6/5 = 1余1 在向上取整
-    pageVisible: 7 // 分页条中可见页面码数
+    pageVisible: 7, // 分页条中可见页面码数
+    authorid: '',
+    title: ''
   }),
   methods: {
     onPageChange() {
-      this.fetch(this.page, this.pageLimit)
+      this.fetch(this.page, this.pageLimit, this.authorid, this.title)
     },
-    readCategoryArticle(id) {
-      console.log('分类的id' + id)
+    readAuthorArticle(id) {
+      this.authorid = id
+      this.fetch(this.page, this.pageLimit, this.authorid, this.title)
     },
-    readAuthorArticle(name) {
-      console.log('作者的name' + name)
-    },
-    fetch(page = 1, pageLimit = 5) {
+    fetch(page = 1, pageLimit = 5, author = '', title = '') {
       // page === 1 ? page : page - 1
       this.$http
-        .get(`/api/article_list/?page=${page}&size=${pageLimit}/`)
+        // ?author=273&page=1&size=2&title=
+        // ?page=${page}&size=${pageLimit}/
+        .get(`/api/article_list/?author=${author}&page=${page}&size=${pageLimit}&search=${title}`)
         .then(res => {
           this.articleList = res.data.results
           this.pageCount = res.data.count
-          console.log(res.data.results)
           this.pageLength = Math.ceil(this.pageCount / this.pageLimit)
         })
         .catch(err => {
@@ -71,6 +75,12 @@ export default {
   },
   created() {
     this.fetch()
+  },
+  watch: {
+    searchVal: function (val) {
+      this.title = val
+      this.fetch(this.page, this.pageLimit, this.authorid, this.title)
+    }
   }
 }
 </script>
