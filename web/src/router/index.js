@@ -5,6 +5,7 @@ import Article from '../views/Article.vue'
 import Category from '../views/category.vue'
 import ArticleByCategory from '../views/ArticleByCategory.vue'
 import Archiving from '../views/Archiving.vue'
+import About from '../views/About.vue'
 
 Vue.use(VueRouter)
 
@@ -33,6 +34,14 @@ const routes = [
     component: Archiving,
     meta: {
       title: '归档'
+    }
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: About,
+    meta: {
+      title: '关于'
     }
   },
   {

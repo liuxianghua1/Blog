@@ -34,7 +34,7 @@
     </v-main>
 
     <v-footer padless>
-      <v-col cols="12" class="text-center black--text">谁也不感谢了，就感谢我自己，写代码好累，我好牛蛙！ </v-col>
+      <!-- <v-col cols="12" class="text-center black--text"> </v-col> -->
       <v-col class="text-center" cols="12"> {{ new Date().getFullYear() }} — <strong>刘翔華</strong> </v-col>
     </v-footer>
   </v-app>
