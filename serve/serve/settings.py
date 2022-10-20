@@ -23,9 +23,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-0sqax8#0yw19msr9xgir(1+$v-zeb^5de04+cy&#t0)hc3aj7b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# 原来是True
+# DEBUG = False
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "frontend/dist/"),
+# ]
+
+
 
 
 # Application definition
@@ -70,7 +78,7 @@ ROOT_URLCONF = 'serve.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR,'dist')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -135,7 +143,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -159,3 +167,17 @@ SIMPLE_JWT = {
     'JWT_PAYLOAD_HANDLER': "username",
     'JWT_AUTH_HEADER_PREFIX': 'JWT'
 }
+
+
+# STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
+# STATIC_URL = 'static/'
+
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
+
+
+STATICFILES_DIRS = [
+    # os.path.join(BASE_DIR, 'static'),# 项目默认会有的路径，如果你部署的不仅是前端打包的静态文件，项目目录static文件下还有其他文件，最好不要删
+    os.path.join(BASE_DIR, "dist/static"),# 加上这条
+]

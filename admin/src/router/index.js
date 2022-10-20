@@ -17,7 +17,7 @@ Vue.use(VueRouter)
 // 超级用户的
 const routes = [
   { path: '/login', name: 'login', component: Login, meta: { isPublic: true } },
-  // { path: '/admin/', redirect: '/admin' },
+  { path: '/', redirect: '/admin' },
   {
     path: '/admin',
     name: 'Main',
@@ -62,6 +62,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  // mode: 'hash',
   routes
 })
 

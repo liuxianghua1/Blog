@@ -7,7 +7,8 @@ const http = axios.create({
   // 动态端口 不写死
   // baseURL: process.env.VUE_APP_API_URL || '/admin/api',
 
-  baseURL: 'http://127.0.0.1:8000/'
+  // baseURL: 'http://127.0.0.1:8000/'
+  baseURL: process.env.VUE_APP_API_URLs
   // baseURL: 'http://10.10.10.114:8000/'
 })
 
